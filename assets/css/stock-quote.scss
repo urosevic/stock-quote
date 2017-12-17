@@ -1,0 +1,28 @@
+.stock_quote {
+    .widget & {
+        margin: 0;
+        padding: 0;
+    }
+    &.sqitem {
+        &.error {
+            font-weight: bold;
+        }
+        &.minus,
+        &.plus {
+            &::before {
+                display: inline-block;
+                margin-right: 2px;
+                content: "";
+                width: 10px;
+                height: 14px;
+                background: url(data:image/gif;base64,R0lGODlhFAAKAKIHAMwzAACZAABmAJkAAMyIcsz/zDOZM////yH5BAEAAAcALAAAAAAUAAoAQAM3eHol+2TIp0oIjhIAxrJXGBjZsXUUOJbK6aUXe3LcW62UWT/qRUI7GGYxowUZMY3RVhE4cyZmAgA7) no-repeat;
+            }
+        }
+        &.minus::before {
+            background-position: -10px 4px;
+        }
+        &.plus::before {
+            background-position: 0 4px;
+        }
+    }
+}

@@ -1,0 +1,252 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Stock Quote\n"
+"POT-Creation-Date: 2017-01-18 23:58+0100\n"
+"PO-Revision-Date: 2016-05-22 23:29+0200\n"
+"Last-Translator: Aleksandar Urošević <urke.kg@gmail.com>\n"
+"Language-Team: Aleksandar Urošević <urke.kg@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: stock-quote.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: inc/settings.php:48
+msgid "Default Settings"
+msgstr ""
+
+#: inc/settings.php:56
+msgid "Stock Symbols"
+msgstr ""
+
+#: inc/settings.php:62
+msgid "Enter default stock symbol"
+msgstr ""
+
+#: inc/settings.php:69
+msgid "Show Company as"
+msgstr ""
+
+#: inc/settings.php:75
+msgid "What to show as Company identifier by default"
+msgstr ""
+
+#: inc/settings.php:77
+msgid "Company Name"
+msgstr ""
+
+#: inc/settings.php:78
+msgid "Stock Symbol"
+msgstr ""
+
+#: inc/settings.php:85
+msgid "Number format"
+msgstr ""
+
+#: inc/settings.php:91
+msgid "Select default number format"
+msgstr ""
+
+#: inc/settings.php:103
+msgid "Decimal places"
+msgstr ""
+
+#: inc/settings.php:109
+msgid "Select amount of decimal places for numbers"
+msgstr ""
+
+#: inc/settings.php:111
+msgid "One"
+msgstr ""
+
+#: inc/settings.php:112
+msgid "Two"
+msgstr ""
+
+#: inc/settings.php:113
+msgid "Three"
+msgstr ""
+
+#: inc/settings.php:114
+msgid "Four"
+msgstr ""
+
+#: inc/settings.php:122
+msgid "Unchanged Quote"
+msgstr ""
+
+#: inc/settings.php:128
+msgid "Set colour for unchanged quote"
+msgstr ""
+
+#: inc/settings.php:134
+msgid "Netagive Change"
+msgstr ""
+
+#: inc/settings.php:140
+msgid "Set colour for negative change"
+msgstr ""
+
+#: inc/settings.php:146
+msgid "Positive Change"
+msgstr ""
+
+#: inc/settings.php:152
+msgid "Set colour for positive change"
+msgstr ""
+
+#: inc/settings.php:160
+msgid "Advanced Settings"
+msgstr ""
+
+#: inc/settings.php:168
+msgid "Custom Names"
+msgstr ""
+
+#: inc/settings.php:177
+msgid ""
+"Define custom names for symbols. Single symbol per row in format EXCHANGE:"
+"SYMBOL;CUSTOM_NAME"
+msgstr ""
+
+#: inc/settings.php:183
+msgid "Cache Timeout"
+msgstr ""
+
+#: inc/settings.php:189
+msgid "Define cache timeout for single quote set, in seconds"
+msgstr ""
+
+#: inc/settings.php:200 templates/settings.php:27
+msgid "Fetch Timeout"
+msgstr ""
+
+#: inc/settings.php:206
+msgid ""
+"Define timeout to fetch quote feed before give up and display error message, "
+"in seconds (default is 2)"
+msgstr ""
+
+#: inc/settings.php:217
+msgid "Error Message"
+msgstr ""
+
+#: inc/settings.php:223
+msgid ""
+"When Stock Quote fail to grab quote set from Google Finance, display this "
+"mesage instead. Use macro <em>%symbol%</em> to insert requested symbol."
+msgstr ""
+
+#: inc/settings.php:232
+msgid "Custom Style"
+msgstr ""
+
+#: inc/settings.php:241
+msgid "Define custom CSS style for quote item (font family, size, weight)"
+msgstr ""
+
+#: inc/settings.php:249
+msgid ""
+"Predefine default settings for Stock Quote. Here you can set stock symbols "
+"and how you wish to present companies in page."
+msgstr ""
+
+#: inc/settings.php:253
+msgid "Set advanced options important for caching quote feeds."
+msgstr ""
+
+#: inc/settings.php:353 templates/settings.php:2
+msgid "Stock Quote Settings"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+#: inc/settings.php:354
+msgid "Stock Quote"
+msgstr ""
+
+#: inc/settings.php:366
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: stock-quote.php:181
+msgid "Settings"
+msgstr ""
+
+#: stock-quote.php:200
+msgid "Support"
+msgstr ""
+
+#: stock-quote.php:204
+msgid "Donate"
+msgstr ""
+
+#: templates/settings.php:15
+msgid "Help"
+msgstr ""
+
+#: templates/settings.php:16
+#, php-format
+msgid "To insert Stock Quote to content, use shortcode <code>%s</code> where:"
+msgstr ""
+
+#: templates/settings.php:18
+msgid ""
+"represent single stock symbol (default from this settings page used if no "
+"custom set by shortcode)"
+msgstr ""
+
+#: templates/settings.php:19
+#, php-format
+msgid ""
+"can be <code>%s</code> to represent company with Company Name (default), or "
+"<code>%s</code> to represent company with Stock Symbol"
+msgstr ""
+
+#: templates/settings.php:20
+msgid ""
+"to disable link of quotes to Google Finance page set to <code>1</code> or "
+"<code>true</code>"
+msgstr ""
+
+#: templates/settings.php:21
+msgid "custom class name for quote item"
+msgstr ""
+
+#: templates/settings.php:26
+#, php-format
+msgid ""
+"If you experience error message after update (WordPress or plugin), try to "
+"increase %s parameter in settings (from default 2 to 3 seconds), and then "
+"append to page URL parameter %s to re-fetch quote feed."
+msgstr ""
+
+#: templates/settings.php:44
+msgid "Disclaimer"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://urosevic.net/wordpress/plugins/stock-quote/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Quick and easy insert static inline stock information for specific exchange "
+"symbol by customizable shortcode."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Aleksandar Urosevic"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://urosevic.net"
+msgstr ""
