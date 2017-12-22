@@ -29,7 +29,6 @@ Textdomain: stock-quote
  */
 /**
  * @TODO:
- * * Add on shortcode renderer part to check is current symbol already in All Symbols list and append if it's not
  * * Add loading of stock data by AJAX on front-end
  * * Add front-end symbol fetch AJAX call
  * * Store rendered CSS to wp_options on plugin save and use cached style for wp_head
@@ -489,7 +488,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		 * Generate content for quote item
 		 * @param  string   $symbol        Stock symbol
 		 * @param  string   $show          How to represent company (symbol or name).
-		 * @param  boolean  $nolink        Should item be linked to Google Finance page?
+		 * @param  boolean  $nolink        Should item be linked to Google Finance page? @deprecated
 		 * @param  string   $class         Custom class name for block.
 		 * @param  integer  $decimals      Number of decimal places.
 		 * @param  string   $number_format Which number format to use (dc, sc, cd, sd).
@@ -504,6 +503,9 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 			// Get defaults.
 			$defaults = $this->defaults;
+
+			// Append this symbol to all_symbils if missing
+			self::add_to_all_symbols( $symbol );
 
 			// Prepare quote.
 			$class = "stock_quote sqitem $class";
@@ -1158,6 +1160,35 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			update_option( 'stockquote_av_progress', false );
 			return;
 		}
+
+		/**
+		 * Allow only numbers, alphabet, comma, dot, semicolon, equal and carret
+		 * @param  string $symbols Unfiltered value of stock symbols
+		 * @return string          Sanitized value of stock symbols
+		 */
+		public function sanitize_symbols( $symbols ) {
+			$symbols = preg_replace( '/[^0-9A-Z\=\.\,\:\^]+/', '', strtoupper( $symbols ) );
+			return $symbols;
+		} // END public function sanitize_symbols( $symbols )
+
+		/**
+		 * Append to All Symbols array currently displayed symbol
+		 * @param string $symbol Single symbol
+		 */
+		public function add_to_all_symbols( $symbol ) {
+			global $wpau_stockquote_settings;
+			$symbol = $this->sanitize_symbols( $symbol );
+			if ( ! empty( $symbol ) ) {
+				$all_symbols = $this->defaults['all_symbols'];
+				$all_symbols_arr = explode( ',', $all_symbols );
+				if ( ! in_array( $symbol, $all_symbols_arr ) ) {
+
+					$all_symbols_arr[] = $symbol;
+					$this->defaults['all_symbols'] = join( ',', $all_symbols_arr );
+					update_option( $this->plugin_option, $this->defaults );
+				}
+			}
+		} // END public function add_to_all_symbols( $symbol )
 
 		public static function log( $str ) {
 			// Only if WP_DEBUG is enabled

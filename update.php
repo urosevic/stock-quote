@@ -43,7 +43,6 @@ function au_stockquote_update() {
 
 } // END function au_stockquote_update()
 
-
 /**
  * Migrate pre-0.2.0 to 0.2.0 version
  */
@@ -66,9 +65,9 @@ function au_stockquote_update_routine_1() {
 		$defaults['all_symbols'] = $defaults['symbol'];
 	}
 
-	// Add 3.0.0 options
-	if ( empty( $defaults['avapikey'] ) ) {
-		$defaults['avapikey'] = '';
+	// If fetch timeout is shorted than 4 seconds, increase timeout to 4 seconds
+	if ( (int) $defaults['timeout'] < 4 ) {
+		$defaults['timeout'] = 4;
 	}
 
 	// Update options

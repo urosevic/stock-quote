@@ -495,6 +495,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				return $sanitized;
 			}
 
+			global $wpau_stockquote;
 			foreach ( $options as $key => $value ) {
 				switch ( $key ) {
 					case 'avapikey':
@@ -503,12 +504,14 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 						break;
 					case 'symbols':
 						// Always uppercase
-						$value = self::sanitize_symbols( $value );
+						// $value = self::sanitize_symbols( $value );
+						$value = $wpau_stockquote->sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'symbols' );
 						break;
 					case 'all_symbols':
 						// Always uppercase
-						$value = self::sanitize_symbols( $value );
+						// $value = self::sanitize_symbols( $value );
+						$value = $wpau_stockquote->sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'all_symbols' );
 						// Add error if there is not supported exchanges
 						// add_settings_error( 'all_symbols', 'all_symbols', 'You have unsupported exchange markets in All Symbols. Please remove them!', 'error' );
@@ -610,18 +613,6 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			// Render the settings template.
 			include( sprintf( '%s/../templates/settings.php', dirname( __FILE__ ) ) );
 		} // END public function plugin_settings_page()
-
-
-		/**
-		 * Allow only numbers, alphabet, comma, dot, semicolon, equal and carret
-		 * @param  string $symbols Unfiltered value of stock symbols
-		 * @return string          Sanitized value of stock symbols
-		 */
-		private function sanitize_symbols( $symbols ) {
-			$symbols = preg_replace( '/[^0-9A-Z\=\.\,\:\^]+/', '', strtoupper( $symbols ) );
-			return $symbols;
-		} // END private function sanitize_symbols( $symbols )
-
 
 		/**
 		 * Strip unsupported stock symbols and throw message with list of removed symbols

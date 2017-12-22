@@ -147,7 +147,10 @@ This is initial version of plugin.
 
 == Changelog ==
 = 0.2.0 (20171222) =
-* (20171222) Add: fetching system to settings page
+* (20171222)
+* Move: method sanitize_symbols to main plugin class
+* Add: on shortcode renderer part to check is current symbol already in All Symbols list and append if it's not (method `add_to_all_symbols`)
+* Add: fetching system to settings page
 * Fix: Fatal exceptions caused by classes, methods and variables renaming
 * Fix: Settings page
 * Fix: Admin settings symbol
