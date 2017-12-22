@@ -146,6 +146,17 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
+= 0.2.0 (20171222) =
+* (20171222) Add: fetching system to settings page
+* Fix: Fatal exceptions caused by classes, methods and variables renaming
+* Fix: Settings page
+* Fix: Admin settings symbol
+* (20171217) Add: plugin update script with database creation and legacy settings migration
+* Add: All Symbols settings field
+* Add: AlphaVantage parser and DB updater
+* Add: get_stock_from_db
+* (20171212) Start AlphaVantage.co version based on v0.1.7.1
+
 = 0.1.7.1 (20170524) =
 * Fix: when changep is empty - PHP Warning:  number_format() expects parameter 1 to be float, string given in wp-content/plugins/stock-quote/stock-quote.php on line 436
 
