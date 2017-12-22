@@ -141,7 +141,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				'wpausq_default',
 				__( 'Default', 'wpausq' ),
 				array( &$this, 'settings_default_section_description' ),
-				'wpau_stock_quote'
+				$wpau_stockquote->plugin_slug
 			);
 			// Add setting's fields.
 			add_settings_field(
