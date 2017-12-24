@@ -2,9 +2,10 @@
 Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
-Requires at least: 3.9.0
-Tested up to: 4.7.5
-Stable tag: 0.1.7.1
+Requires at least: 4.4.0
+Tested up to: 4.9.1
+Stable tag: 0.2.0
+Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,20 +13,19 @@ Quick and easy insert static inline stock information for specific exchange symb
 
 == Description ==
 
-*IMPORTANT NOTICE*
-Google in September 2017 completely abandoned free stock API we used for Stock Quote plugin. That is reason why plugin does not work anymore. We'll try to find other stock resource allowed by wordpress.org rules and update plugin. If you have any advise or example of free stock API, feel free to contact us at https://urosevic.net/c/
-
-A simple and easy configurable plugin that allows you to insert inline stock quotes with stock price information (data provided by Google Finance). Insertion is enabled by shortcode.
+A simple and easy configurable plugin that allows you to insert inline stock quotes with stock price information (data provided by AlphaVantage.co). Insertion is enabled by shortcode.
 
 Stock Quote is simplified, static inline variation of [Stock Ticker](https://wordpress.org/plugins/stock-ticker/) plugin.
+
+**Multisite WordPress is not supported jet**
 
 = Features =
 * Configure default stock symbol that will be displayed by shortcode if no symbol provided
 * Configure default presence of company as Company Name or as Stock Symbol
 * Configure global colours for unchanged quote, negative and positive changes
-* Tooltip for quote item display company name, exchange market and last trade date/time
+* Tooltip for quote item display company name, exchange market and last trade date/time (if available)
 * Define custom names for companies to be used instead symbols
-* Plugin uses native WordPress function to get and cache data from Google Finance for predefined duration of time
+* Plugin uses native WordPress function to get and cache data from AlphaVantage.co API for predefined duration of time
 
 For feature requests or help [send feedback](https://urosevic.net/wordpress/plugins/stock-quote/ "Official plugin page") or use support forum on WordPress.
 
@@ -36,10 +36,9 @@ You can tune single shortcode with parameters:
 
 * `symbol` - represent single stock symbol (if not provided then use default from settings page)
 * `show` - can be `name` to represent company with Company Name (default), or `symbol` to represent company with Stock Symbol. You must add preferred symbol to˛`Custom Names` textarea on Settings page because Google Finance does not provide nice company names in feeds
-* **NEW** `decimals` - override default number of decimal places for values (default from settings page used if no custom set by shortcode). Valud values are: `1`, `2`, `3` and `4`
-* **NEW** `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
-* **NEW** `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company_show%`, `%company%`, `%exchange%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%` and `%ltrade%`
-* `nolink` - to disable link of quotes to Google Finance page set to `1` or `true`
+* `decimals` - override default number of decimal places for values (default from settings page used if no custom set by shortcode). Valud values are: `1`, `2`, `3` and `4`
+* `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
+* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%` and `%volume%`
 * `class` - (optional) custom class name for quote item, if you wish some special styling
 
 = Example =
@@ -50,6 +49,35 @@ or
 
 `[stock_quote symbol="MSFT" decimals=3 number_format=cd template="%symbol% %price% %change% %changep%"]`
 
+= Supported Stock Exchange Markets =
+
+Alpha Vantage provide stock data for following stock exchange markets:
+
+* **ASX** - Australian Securities Exchange
+* **BOM** - Bombay Stock Exchange
+* **BIT** - Borsa Italiana Milan Stock Exchange
+* **TSE** - Canadian/Toronto Securities Exchange
+* **FRA** - Deutsche Boerse Frankfurt Stock Exchange
+* **ETR** - Deutsche Boerse Frankfurt Stock Exchange
+* **AMS** - Euronext Amsterdam
+* **EBR** - Euronext Brussels
+* **ELI** - Euronext Lisbon
+* **EPA** - Euronext Paris
+* **LON** - London Stock Exchange
+* **MCX** - Moscow Exchange
+* **NASDAQ** - NASDAQ Exchange
+* **CPH** - NASDAQ OMX Copenhagen
+* **HEL** - NASDAQ OMX Helsinki
+* **ICE** - NASDAQ OMX Iceland
+* **STO** - NASDAQ OMX Stockholm
+* **NSE** - National Stock Exchange of India
+* **NYSE** - New York Stock Exchange
+* **SGX** - Singapore Exchange
+* **SHA** - Shanghai Stock Exchange
+* **SHE** - Shenzhen Stock Exchange
+* **TPE** - Taiwan Stock Exchange
+* **TYO** - Tokyo Stock Exchange
+
 == Installation ==
 
 Easy install Stock Quote as any other ordinary WordPress plugin
@@ -57,7 +85,12 @@ Easy install Stock Quote as any other ordinary WordPress plugin
 1. Go to `Plugins` -> `Add New`
 1. Search for `Stock Quote` plugin
 1. Install and activate `Stock Quote`
-1. Configure default plugin options and insert shortcode `[stock_quote]` to page or post
+1. Get a free API Key from [AlphaVantage.co](https://www.alphavantage.co/support/#api-key)
+1. In WordPress Dashboard go to `Settings` -> `Stock Quote`
+1. Enter to field `AlphaVantage.co API Key` Alpha Vantage API Key you received in previous step
+1. Enter to field `All Stock Symbols` all stock symbols you’ll use on whole website in various shortcodes, separated by comma. This field is used to fetch stock data from AlphaVantage.co API by AJAX in background. Because AV have only API to get data for single symbol, that can take a while to get. Please note, for default shortcode symbol there is still field in Default Settings section of plugin.
+1. Save settings and click button `Fetch Stock Data Now!` to initially fetch stock data to database and wait for a while until we get all symbols from AlphaVantage.co for the very first time.
+1. Insert shortcode `[stock_quote]` to page or post as usual.
 
 == Screenshots ==
 
@@ -68,8 +101,7 @@ Easy install Stock Quote as any other ordinary WordPress plugin
 
 = How to know which stock symbols to use? =
 
-Visit [Google Finance Stock Screener](https://www.google.com/finance#stockscreener) and look for preferred symbols that you need/wish to display on your site.
-For start you can try with AAPL (Apple)
+For start you can try with AAPL (Apple). If you need some specific symbol, check you'll need to figure out by your self.
 
 = How to get Dow Jones Industrial Average? =
 
@@ -97,46 +129,11 @@ Add this to your template file (you also can add custom parameters for shortcode
 
 = I set to show company name but symbol is displayed instead =
 
-Please note that Google Finance does not provide company name in retrieved feeds. You'll need to set company name to Custom Names field on plugin settings page.
+You'll need to set company name to Custom Names field on plugin settings page.
 
 == Disclaimer ==
 
-Data for Stock Quote has provided by Google Finance and per their disclaimer, it can only be used at a noncommercial level. Please also note that Google has stated Finance API as deprecated and has no exact shutdown date.
-
-[Google Finance Disclaimer](http://www.google.com/intl/en-US/googlefinance/disclaimer/#disclaimers)
-
-Data is provided by financial exchanges and may be delayed as specified
-by financial exchanges or our data providers. Google does not verify any
-data and disclaims any obligation to do so.
-
-Google, its data or content providers, the financial exchanges and
-each of their affiliates and business partners (A) expressly disclaim
-the accuracy, adequacy, or completeness of any data and (B) shall not be
-liable for any errors, omissions or other defects in, delays or
-interruptions in such data, or for any actions taken in reliance thereon.
-Neither Google nor any of our information providers will be liable for
-any damages relating to your use of the information provided herein.
-As used here, “business partners” does not refer to an agency, partnership,
-or joint venture relationship between Google and any such parties.
-
-You agree not to copy, modify, reformat, download, store, reproduce,
-reprocess, transmit or redistribute any data or information found herein
-or use any such data or information in a commercial enterprise without
-obtaining prior written consent. All data and information is provided “as is”
-for personal informational purposes only, and is not intended for trading
-purposes or advice. Please consult your broker or financial representative
-to verify pricing before executing any trade.
-
-Either Google or its third party data or content providers have exclusive
-proprietary rights in the data and information provided.
-
-Please find all listed exchanges and indices covered by Google along with
-their respective time delays from the table on the left.
-
-Advertisements presented on Google Finance are solely the responsibility
-of the party from whom the ad originates. Neither Google nor any of its
-data licensors endorses or is responsible for the content of any advertisement
-or any goods or services offered therein.
+Data for Stock Quote has been provided by AlphaVantage.co
 
 == Upgrade Notice ==
 = 0.1.1 =
@@ -147,6 +144,8 @@ This is initial version of plugin.
 
 == Changelog ==
 = 0.2.0 (20171222) =
+* (20171224)
+* * Add: front-end updater AJAX call
 * (20171222)
 * Move: method sanitize_symbols to main plugin class
 * Add: on shortcode renderer part to check is current symbol already in All Symbols list and append if it's not (method `add_to_all_symbols`)

@@ -1,0 +1,1 @@
+jQuery(document).ready(function(){setTimeout(function(){jQuery.ajax({type:"post",dataType:"json",async:!0,url:stockQuoteJs.ajax_url,data:{action:"stockquote_update_quotes"}}).done(function(e){console.log("Stock Quote update quotes response: "+e.message)})},2e3)});

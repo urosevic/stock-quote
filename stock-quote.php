@@ -30,8 +30,6 @@ Textdomain: stock-quote
 /**
  * @TODO:
  * * Add loading of stock data by AJAX on front-end
- * * Add front-end symbol fetch AJAX call
- * * Store rendered CSS to wp_options on plugin save and use cached style for wp_head
  */
 
 // Exit if accessed directly
@@ -133,18 +131,6 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				// Enqueue frontend scripts.
 				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			}
-
-			/*
-			// Add Settings page link to plugin actions cell.
-			$plugin_file = plugin_basename( __FILE__ );
-			add_filter( "plugin_action_links_$plugin_file", array( $this, 'plugin_settings_link' ) );
-
-			// Update links in plugin row on Plugins page.
-			add_filter( 'plugin_row_meta', array( $this, 'add_plugin_meta_links' ), 10, 2 );
-
-			// Load colour picker scripts on plugin settings page.
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-			*/
 
 			// Add dynamic scripts and styles to footer.
 			add_action( 'wp_head', array( $this, 'wp_head' ), 999 );
@@ -350,7 +336,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					'stockQuoteJs',
 					array(
 						'ajax_url' => admin_url( 'admin-ajax.php' ),
-						'avurl'    => 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&apikey=' . $this->defaults['avapikey'] . '&symbol='
+						'avurl'    => 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&apikey=' . $this->defaults['avapikey'] . '&symbol=',
 					)
 				);
 				wp_enqueue_script( $this->plugin_slug . '-admin' );
@@ -365,20 +351,6 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$defaults = $this->defaults;
 			$upload_dir = wp_upload_dir();
 
-			/*
-			wp_enqueue_style(
-				$this->plugin_slug,
-				$this->plugin_url . 'assets/css/stock-quote.css',
-				array(),
-				self::VER
-			);
-			wp_enqueue_style(
-				$this->plugin_slug . '-custom',
-				set_url_scheme( $upload_dir['baseurl'] ) . '/stock-quote-custom.css',
-				array(),
-				self::VER
-			);
-			/**/
 			wp_register_script(
 				$this->plugin_slug,
 				$this->plugin_url . ( WP_DEBUG ? 'assets/js/jquery.stockquote.js' : 'assets/js/jquery.stockquote.min.js' ),
@@ -523,7 +495,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			}
 
 			// Prepare number format
-			if ( ! empty( $number_format ) && in_array( $number_format, array( 'dc','sd','sc','cd' ) ) ) {
+			if ( ! empty( $number_format ) && in_array( $number_format, array( 'dc', 'sd', 'sc', 'cd' ) ) ) {
 				$defaults['number_format'] = $number_format;
 			} else if ( ! isset( $defaults['number_format'] ) ) {
 				$defaults['number_format'] = 'cd';
@@ -673,6 +645,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			), $atts );
 
 			if ( ! empty( $atts['symbol'] ) ) {
+				wp_enqueue_script( $this->plugin_slug );
 				$symbol = strip_tags( $atts['symbol'] );
 				return self::stock_quote( $symbol, $atts['show'], $atts['nolink'], $atts['class'], $atts['decimals'], $atts['number_format'], $atts['template'] );
 			}
@@ -696,19 +669,8 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// glue together all the placeholders...
 			$format = implode( ',', $placeholders );
 			// put all in the query and prepare
-			/*
-			$stock_sql = $wpdb->prepare(
-				"
-				SELECT `symbol`,`tz`,`last_refreshed`,`last_open`,`last_high`,`last_low`,`last_close`,`last_volume`,`change`,`changep`,`range`
-				FROM {$wpdb->prefix}stock_quote_data
-				WHERE symbol IN ($format)
-				",
-				$symbols_arr
-			);
 
 			// retrieve the results from database
-			$stock_data_a = $wpdb->get_results( $stock_sql, ARRAY_A );
-			/**/
 			$stock_data_a = $wpdb->get_results( $wpdb->prepare(
 				"
 				SELECT `symbol`,`tz`,`last_refreshed`,`last_open`,`last_high`,`last_low`,`last_close`,`last_volume`,`change`,`changep`,`range`
@@ -742,7 +704,10 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$progress = get_option( 'stockquote_av_progress', false );
 
 			if ( false != $progress ) {
-				return;
+				return array(
+					'message' => 'Stock Quote Skip: Currently fetching another symbol in other thread',
+					'symbol'  => '',
+				);
 			}
 
 			// Set fetch progress as active
@@ -801,18 +766,6 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					$symbol_to_fetch = strtoupper( $symbols_arr[ $current_symbol_index ] );
 				}
 			}
-			/*
-			// If no symbol to fetch, exit
-			if ( empty( $symbol_to_fetch ) ) {
-				// Set last fetched symbol to none
-				update_option( 'stockquote_av_last', '' );
-				// and release processing for next run
-				self::unlock_fetch();
-				// then return message as a response
-				$msg = 'No symbols to fetch!';
-				return $msg;
-			}
-			*/
 
 			// If current_symbol_index is 0 and cache timeout has not expired,
 			// do not attempt to fetch again but wait to expire timeout for next loop (UTC)
@@ -823,7 +776,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				if ( $target_timestamp > $current_timestamp ) {
 					// If timestamp not expired, do not fetch but exit
 					self::unlock_fetch();
-					return array( 
+					return array(
 						'message' => 'Cache timeout has not expired, no need to fetch new loop at the moment.',
 						'symbol'  => $symbol_to_fetch,
 					);
@@ -843,7 +796,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 				// If it's Invalid API call, report and skip it
 				if ( strpos( $stock_data, 'Invalid API call' ) >= 0 ) {
-					self::log( "Damn, we got Invalid API call for symbol " . $symbol_to_fetch );
+					self::log( 'Damn, we got Invalid API call for symbol ' . $symbol_to_fetch );
 					update_option( 'stockquote_av_last', $symbol_to_fetch );
 				}
 
@@ -869,7 +822,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// I'm not using here $wpdb->replace() as I wish to avoid reinserting row to table which change primary key (delete row, insert new row)
 			$symbol_exists = $wpdb->get_var( $wpdb->prepare(
 				"
-					SELECT symbol 
+					SELECT symbol
 					FROM {$wpdb->prefix}stock_quote_data
 					WHERE symbol = %s
 				",

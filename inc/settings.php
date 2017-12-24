@@ -146,7 +146,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			// Add setting's fields.
 			add_settings_field(
 				$this->option_name . 'symbol',
-				__( 'Stock Symbols', 'wpausq' ),
+				__( 'Stock Symbol', 'wpausq' ),
 				array( &$this, 'settings_field_input_text' ),
 				$wpau_stockquote->plugin_slug,
 				'wpausq_default',
@@ -306,7 +306,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				'wpausq_advanced',
 				array(
 					'field'       => $this->option_name . '[timeout]',
-					'description' => __( 'Define timeout to fetch quote feed before give up and display error message, in seconds (default is 2)', 'wpausq' ),
+					'description' => __( 'Define timeout to fetch quote feed before give up and display error message, in seconds (default is 4)', 'wpausq' ),
 					'class'       => 'num small-text',
 					'value'       => isset( $this->defaults['timeout'] ) ? $this->defaults['timeout'] : 2,
 					'min'         => 1,
@@ -354,7 +354,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 		public function settings_general_section_description() {
 			// Think of this as help text for the section.
 			esc_attr_e(
-				'Predefine general settings for Stock Quote. Here you can set API key and symbols used on whole website (in all ticker).',
+				'Predefine general settings for Stock Quote. Here you can set API key and symbols used on whole website (in all quotes).',
 				'wpausq'
 			);
 		}
@@ -378,14 +378,12 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 		 * @param  array $args Array of field options
 		 */
 		public function settings_field_input_text( $args ) {
-			extract( $args );
 			printf(
-				'<input type="text" name="%s" id="%s" value="%s" class="%s" /><p class="description">%s</p>',
-				$field,
-				$field,
-				$value,
-				$class,
-				$description
+				'<input type="text" name="%1$s" id="%1$s" value="%2$s" class="%3$s" /><p class="description">%4$s</p>',
+				esc_attr( $args['field'] ),
+				esc_attr( $args['value'] ),
+				sanitize_html_class( $args['class'] ),
+				esc_html( $args['description'] )
 			);
 		} // END public function settings_field_input_text($args)
 
@@ -406,79 +404,95 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 
 		/**
 		 * This function provides number inputs for settings fields
+		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_input_number( $args ) {
-			extract( $args );
 			printf(
-				'<input type="number" name="%1$s" id="%2$s" value="%3$s" class="%4$s" min="%5$s" max="%6$s" step="%7$s" /><p class="description">%8$s</p>',
-				$field, // name
-				$field, // id
-				$value, // value
-				$class, // class
-				$min, // min
-				$max, // max
-				$step, // step
-				$description // description
+				'<input type="number" name="%1$s" id="%2$s" value="%3$s" min="%4$s" max="%5$s" step="%6$s" class="%7$s" /><p class="description">%8$s</p>',
+				esc_attr( $args['field'] ),            // 1
+				esc_attr( $args['field'] ),            // 2
+				(int) $args['value'],                  // 3
+				(int) $args['min'],                    // 4
+				(int) $args['max'],                    // 5
+				(int) $args['step'],                   // 6
+				sanitize_html_class( $args['class'] ), // 7
+				esc_html( $args['description'] )       // 8
 			);
 		} // END public function settings_field_input_number($args)
 
 		/**
 		 * This function provides checkbox for settings fields
+		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_checkbox( $args ) {
-			extract( $args );
 			$checked = ( ! empty( $args['value'] ) ) ? 'checked="checked"' : '';
 			printf(
-				'<label for="%s"><input type="checkbox" name="%s" id="%s" value="1" class="%s" %s />%s</label>',
-				$field,
-				$field,
-				$field,
-				$class,
+				'<label for="%1$s"><input type="checkbox" name="%1$s" id="%1$s" value="1" class="%2$s" %3$s />%4$s</label>',
+				esc_attr( $args['field'] ),
+				$args['class'],
 				$checked,
-				$description
+				$args['description']
 			);
-		} // END public function settings_field_checkbox($args)
+
+		} // END public function settings_field_checkbox($args) {
 
 		/**
 		 * This function provides textarea for settings fields
+		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_textarea( $args ) {
-			extract( $args );
-			if ( empty( $rows ) ) {
-				$rows = 2;
+			if ( empty( $args['rows'] ) ) {
+				$args['rows'] = 7;
 			}
 			printf(
 				'<textarea name="%s" id="%s" rows="%s" class="%s">%s</textarea><p class="description">%s</p>',
-				$field,
-				$field,
-				$rows,
-				$class,
-				$value,
-				$description
+				esc_attr( $args['field'] ),
+				esc_attr( $args['field'] ),
+				(int) $args['rows'],
+				sanitize_html_class( $args['class'] ),
+				esc_textarea( $args['value'] ),
+				esc_html( $args['description'] )
 			);
 		} // END public function settings_field_textarea($args)
 
 		/**
 		 * This function provides select for settings fields
+		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_select( $args ) {
-			extract( $args );
-			$html = sprintf( '<select id="%s" name="%s">', $field, $field );
-			foreach ( $items as $key => $val ) {
-				$selected = ( $value == $key ) ? 'selected="selected"' : '';
-				$html .= sprintf( '<option %s value="%s">%s</option>', $selected, $key, $val );
+			if ( empty( $args['class'] ) ) {
+				$args['class'] = 'regular-text';
 			}
-			$html .= sprintf( '</select><p class="description">%s</p>', $description );
-			echo $html;
+			printf(
+				'<select id="%1$s" name="%1$s" class="%2$s">',
+				esc_attr( $args['field'] ),
+				sanitize_html_class( $args['class'] )
+			);
+			foreach ( $args['items'] as $key => $val ) {
+				$selected = ( $args['value'] == $key ) ? 'selected=selected' : '';
+				printf(
+					'<option %1$s value="%2$s">%3$s</option>',
+					esc_attr( $selected ),      // 1
+					sanitize_key( $key ),       // 2
+					sanitize_text_field( $val ) // 3
+				);
+			}
+			printf( '</select><p class="description">%s</p>', esc_html( $args['description'] ) );
 		} // END public function settings_field_select($args)
 
+		/**
+		 * Generate colour picker field
+		 * @param  array $args Array of field arguments.
+		 */
 		public function settings_field_colour_picker( $args ) {
-			extract( $args );
-			$html = sprintf( '<input type="text" name="%s" id="%s" value="%s" class="wpau-color-field" />', $field, $field, $value );
-			$html .= ( ! empty( $description ) ) ? ' <p class="description">' . $description . '</p>' : '';
-			echo $html;
+			printf(
+				'<input type="text" name="%1$s" id="%2$s" value="%3$s" class="wpau-color-field" /> <p class="description">%4$s</p>',
+				esc_attr( $args['field'] ),
+				esc_attr( $args['field'] ),
+				esc_attr( $args['value'] ),
+				esc_html( $args['description'] )
+			);
 		} // END public function settings_field_colour_picker($args)
-
 
 		/**
 		 * Sanitize settings options
@@ -504,17 +518,14 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 						break;
 					case 'symbols':
 						// Always uppercase
-						// $value = self::sanitize_symbols( $value );
 						$value = $wpau_stockquote->sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'symbols' );
 						break;
 					case 'all_symbols':
 						// Always uppercase
-						// $value = self::sanitize_symbols( $value );
 						$value = $wpau_stockquote->sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'all_symbols' );
 						// Add error if there is not supported exchanges
-						// add_settings_error( 'all_symbols', 'all_symbols', 'You have unsupported exchange markets in All Symbols. Please remove them!', 'error' );
 						break;
 					case 'legend':
 					case 'loading_message':
@@ -536,14 +547,14 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 					case 'template':
 						$value = strip_tags( $value, '<span><em><strong>' );
 						break;
-					// case 'cache_timeout':
-					// 	$value = (int) $value;
-					// 	$value = ! empty( $value ) ? $value : 180;
-					// 	break;
+					case 'cache_timeout':
+						$value = (int) $value;
+						$value = ! empty( $value ) ? $value : 180;
+						break;
 					case 'fetch_timeout':
 					case 'timeout':
 						$value = (int) $value;
-						$value = ! empty( $value ) ? $value : 2;
+						$value = ! empty( $value ) ? $value : 4;
 						break;
 					case 'refresh_timeout':
 						$value = (int) $value;
@@ -562,7 +573,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 						break;
 					case 'number_format':
 						$value = strip_tags( stripslashes( $value ) );
-						if ( ! in_array( $value, array( 'dc','sd','sc','cd' ) ) ) {
+						if ( ! in_array( $value, array( 'dc', 'sd', 'sc', 'cd' ) ) ) {
 							$value = 'dc';
 						}
 						break;
@@ -646,7 +657,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			// If we have removed symbols, add settings error message
 			if ( ! empty( $symbols_removed ) ) {
 				$symbols_removed_str = join( ', ', $symbols_removed );
-				$opt_name = 'all_symbols' == $control ? 'All Stock Symbols' : 'Stock Symbols';
+				$opt_name = 'all_symbols' == $control ? 'All Stock Symbols' : 'Stock Symbol';
 				add_settings_error(
 					$control,
 					$control,
