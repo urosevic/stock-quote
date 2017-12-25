@@ -2,7 +2,7 @@
 /**
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
-Description: Quick and easy insert static inline stock information for specific exchange symbol by customizable shortcode.
+Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
 Version: 0.2.0
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
@@ -226,7 +226,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				'error_message' => 'Unfortunately, we could not get stock quote %symbol% this time.',
 				'legend'        => "AAPL;Apple Inc.\nFB;Facebook, Inc.\nCSCO;Cisco Systems, Inc.\nGOOG;Google Inc.\nINTC;Intel Corporation\nLNKD;LinkedIn Corporation\nMSFT;Microsoft Corporation\nTWTR;Twitter, Inc.\nBABA;Alibaba Group Holding Limited\nIBM;International Business Machines Corporation\n.DJI;Dow Jones Industrial Average\nEURGBP;Euro (€) ⇨ British Pound Sterling (£)",
 				'style'         => '',
-				'timeout'       => 2,
+				'timeout'       => 4,
 				'loading_message' => 'Loading stock data...',
 				'number_format' => 'dc',
 				'decimals'      => 2,

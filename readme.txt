@@ -9,11 +9,11 @@ Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Quick and easy insert static inline stock information for specific exchange symbol by customizable shortcode.
+Insert static inline stock ticker for known exchange symbols by customizable shortcode. Stock data provided by [Alpha Vantage](https://www.alphavantage.co/).
 
 == Description ==
 
-A simple and easy configurable plugin that allows you to insert inline stock quotes with stock price information (data provided by AlphaVantage.co). Insertion is enabled by shortcode.
+A simple and easy configurable plugin for WordPress which allows you to insert inline stock quotes with stock price information to posts, pages, widgets or even to tempalte files. Insertion is mainly available by shortcode.
 
 Stock Quote is simplified, static inline variation of [Stock Ticker](https://wordpress.org/plugins/stock-ticker/) plugin.
 
