@@ -3,7 +3,7 @@
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
 Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.0
+Version: 0.2.0.1
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
 License: GNU GPL3
@@ -51,7 +51,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 1;
-		const VER = '0.2.0';
+		const VER = '0.2.0.1';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -236,7 +236,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 			return $init;
 
-		} // END public static function defaults()
+		} // END function init_options()
 
 		/**
 		 * Check do we need to migrate options
@@ -272,7 +272,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				$wpau_stockquote_settings = new Wpau_Stock_Quote_Settings();
 			}
 
-		} // END function admin_init_settings()
+		} // END function admin_init()
 
 		/**
 		 * Add link to official plugin pages
@@ -297,7 +297,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				);
 			}
 			return $links;
-		} // END function add_plugin_meta_links()
+		} // END function add_plugin_meta_links( $links, $file )
 
 		/**
 		 * Generate Settings link on Plugins page listing
@@ -368,7 +368,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		/**
 		 * Output custom styling
 		 */
-		public static function wp_head() {
+		function wp_head() {
 
 			// Start with default CSS style.
 			$css = '.widget .stock_quote{margin:0;padding:0}.stock_quote.sqitem.error{font-weight:bold}.stock_quote.sqitem.minus::before,.stock_quote.sqitem.plus::before{display:inline-block;margin-right:2px;content:"";width:10px;height:14px;background:url(data:image/gif;base64,R0lGODlhFAAKAKIHAMwzAACZAABmAJkAAMyIcsz/zDOZM////yH5BAEAAAcALAAAAAAUAAoAQAM3eHol+2TIp0oIjhIAxrJXGBjZsXUUOJbK6aUXe3LcW62UWT/qRUI7GGYxowUZMY3RVhE4cyZmAgA7) no-repeat}.stock_quote.sqitem.minus::before{background-position:-10px 4px}.stock_quote.sqitem.plus::before{background-position:0 4px}';
@@ -392,7 +392,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				echo '<style type="text/css">' . $css . '</style>';
 			}
 
-		} // END public static function wp_head()
+		} // END function wp_head()
 
 		/**
 		 * Get default options from DB
@@ -624,14 +624,14 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// Print quote content.
 			return $out;
 
-		} // END public static function stock_quote()
+		} // END public function stock_quote()
 
 		/**
 		 * Shortcode for stock quote
 		 * @param  array $atts    Array of shortcode parameters.
 		 * @return string         Composer HTML output
 		 */
-		public static function shortcode( $atts ) {
+		public function shortcode( $atts ) {
 
 			$defaults = $this->defaults;
 			$atts = shortcode_atts( array(
@@ -650,7 +650,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				return self::stock_quote( $symbol, $atts['show'], $atts['nolink'], $atts['class'], $atts['decimals'], $atts['number_format'], $atts['template'] );
 			}
 
-		} // END public static function shortcode()
+		} // END public function shortcode()
 
 		// Thanks to https://coderwall.com/p/zepnaw/sanitizing-queries-with-in-clauses-with-wpdb-on-wordpress
 		private function get_stock_from_db( $symbols = '' ) {

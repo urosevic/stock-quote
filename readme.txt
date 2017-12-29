@@ -4,16 +4,18 @@ Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
 Requires at least: 4.4.0
 Tested up to: 4.9.1
-Stable tag: 0.2.0
+Stable tag: 0.2.0.1
 Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Insert static inline stock ticker for known exchange symbols by customizable shortcode. Stock data provided by [Alpha Vantage](https://www.alphavantage.co/).
+Insert static inline stock ticker for known exchange symbols by customizable shortcode.
 
 == Description ==
 
 A simple and easy configurable plugin for WordPress which allows you to insert inline stock quotes with stock price information to posts, pages, widgets or even to tempalte files. Insertion is mainly available by shortcode.
+
+Please note, stock data has been provided by [Alpha Vantage](https://www.alphavantage.co/)
 
 Stock Quote is simplified, static inline variation of [Stock Ticker](https://wordpress.org/plugins/stock-ticker/) plugin.
 
@@ -82,6 +84,8 @@ Alpha Vantage provide stock data for following stock exchange markets:
 
 Easy install Stock Quote as any other ordinary WordPress plugin
 
+https://youtu.be/bi9S8mG3Hz0
+
 1. Go to `Plugins` -> `Add New`
 1. Search for `Stock Quote` plugin
 1. Install and activate `Stock Quote`
@@ -143,6 +147,10 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
+* 0.2.0.1 (20171229)
+* Fix: on PHP 5.x - PHP Fatal error:  Using $this when not in object context
+* Test: PHP 5.6.31 and 7.1.12
+
 = 0.2.0 (20171222) =
 * (20171224)
 * * Add: front-end updater AJAX call
