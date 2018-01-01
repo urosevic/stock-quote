@@ -13,7 +13,7 @@ Insert static inline stock ticker for known exchange symbols by customizable sho
 
 == Description ==
 
-A simple and easy configurable plugin for WordPress which allows you to insert inline stock quotes with stock price information to posts, pages, widgets or even to tempalte files. Insertion is mainly available by shortcode.
+A simple and easy configurable plugin for WordPress which allows you to insert inline stock quotes with stock price information to posts, pages, widgets or even to template files. Insertion is mainly available by shortcode.
 
 Please note, stock data has been provided by [Alpha Vantage](https://www.alphavantage.co/)
 
@@ -21,7 +21,14 @@ Stock Quote is simplified, static inline variation of [Stock Ticker](https://wor
 
 **Multisite WordPress is not supported jet**
 
-= Features =
+== Disclaimer ==
+
+All stock data used in **Stock Quote** is provided by **Alpha Vantage**, displayed for informational and educational purposes only and should not be considered as investment advise.
+
+Author of the **Stock Quote** plugin does not accept liability or responsibility for your use of plugin, including but not limited to trading and investment results. Along to that, author of **Stock Quote** plugin can not guarantee that stock prices are always accurate as they are provided by 3rd party service for free.
+
+== Features ==
+
 * Configure default stock symbol that will be displayed by shortcode if no symbol provided
 * Configure default presence of company as Company Name or as Stock Symbol
 * Configure global colours for unchanged quote, negative and positive changes
@@ -31,7 +38,12 @@ Stock Quote is simplified, static inline variation of [Stock Ticker](https://wor
 
 For feature requests or help [send feedback](https://urosevic.net/wordpress/plugins/stock-quote/ "Official plugin page") or use support forum on WordPress.
 
+== How To Use ==
+
+You can add Stock Quote to posts, pages or widgets by shortcode.
+
 = Shortcode =
+
 Use simple shortcode `[stock_quote]` without any parameter in post or page, to display quote with default (global) settings.
 
 You can tune single shortcode with parameters:
@@ -51,7 +63,7 @@ or
 
 `[stock_quote symbol="MSFT" decimals=3 number_format=cd template="%symbol% %price% %change% %changep%"]`
 
-= Supported Stock Exchange Markets =
+== Supported Stock Exchange Markets ==
 
 Alpha Vantage provide stock data for following stock exchange markets:
 
@@ -135,11 +147,11 @@ Add this to your template file (you also can add custom parameters for shortcode
 
 You'll need to set company name to Custom Names field on plugin settings page.
 
-== Disclaimer ==
-
-Data for Stock Quote has been provided by AlphaVantage.co
-
 == Upgrade Notice ==
+
+= 0.2.0 =
+Broken functionality fix
+
 = 0.1.1 =
 Bugfix release
 
@@ -147,7 +159,8 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
-* 0.2.0.1 (20171229)
+
+= 0.2.0.1 (20171229) =
 * Fix: on PHP 5.x - PHP Fatal error:  Using $this when not in object context
 * Test: PHP 5.6.31 and 7.1.12
 
