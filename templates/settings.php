@@ -46,7 +46,9 @@ global $wpau_stockquote;
 
 	<div class="help">
 		<h2><?php _e( 'Help', 'stock-quote' ); ?></h2>
-		<p><?php printf( __( 'To insert Stock Quote to content, use shortcode <code>%s</code> where:', 'stock-quote' ), '[stock_quote symbol="" show="" decimals="" number_format="" template="" class=""]' ); ?>
+		<p><?php printf( __( 'To insert Stock Quote to content, use shortcode <code>%s</code> where:', 'stock-quote' ), '[stock_quote symbol="" show="" decimals="" number_format="" template="" class=""]' ); ?></p>
+		<p class="description"><strong>IMPORTANT</strong> All shortcode parameters and values should be lowercase, except symbols which must be uppercase!</p>
+		<p>
 			<ul>
 				<li><code><strong>symbol</strong></code> <?php _e( 'represent single stock symbol (default from this settings page used if no custom set by shortcode)', 'stock-quote' ); ?></li>
 				<li><code><strong>show</strong></code> <?php printf( __( 'can be <code>%s</code> to represent company with Company Name (default), or <code>%s</code> to represent company with Stock Symbol', 'stock-quote' ), 'name', 'symbol' ); ?></li>
@@ -57,7 +59,6 @@ global $wpau_stockquote;
 				<li><code><strong>class</strong></code> <?php _e( 'custom class name for quote item', 'stock-quote' ); ?></li>
 			</ul>
 		</p>
-
 	</div><!-- .help_cell -->
 </div>
 

@@ -46,6 +46,8 @@ You can add Stock Quote to posts, pages or widgets by shortcode.
 
 Use simple shortcode `[stock_quote]` without any parameter in post or page, to display quote with default (global) settings.
 
+**IMPORTANT** All shortcode parameters and values should be lowercase, except symbols which must be uppercase!
+
 You can tune single shortcode with parameters:
 
 * `symbol` - represent single stock symbol (if not provided then use default from settings page)
@@ -54,6 +56,7 @@ You can tune single shortcode with parameters:
 * `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
 * `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%` and `%volume%`
 * `class` - (optional) custom class name for quote item, if you wish some special styling
+
 
 = Example =
 

@@ -29,6 +29,7 @@ Textdomain: stock-quote
  */
 /**
  * @TODO:
+ * * Add support for AV function Foreign Currency https://www.alphavantage.co/documentation/#fx (EUR-USD, BTC-USD, etc)
  * * Add loading of stock data by AJAX on front-end
  */
 
