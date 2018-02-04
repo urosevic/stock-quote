@@ -3,7 +3,7 @@
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
 Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.0.1
+Version: 0.2.0.2
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
 License: GNU GPL3
@@ -52,7 +52,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 1;
-		const VER = '0.2.0.1';
+		const VER = '0.2.0.2';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -547,7 +547,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$q_symbol  = $symbol;
 			$q_name    = $stock_data[ $symbol ]['symbol']; // ['t']; // No nicename on AlphaVantage.co so use ticker instead.
 			$q_change  = $stock_data[ $symbol ]['change']; // ['c'];
-			$q_price   = $stock_data[ $symbol ]['last_open']; // ['l'];
+			$q_price   = $stock_data[ $symbol ]['last_close']; // ['l']; // it's last_close instead of last_open
 			$q_changep = $stock_data[ $symbol ]['changep']; // ['cp'];
 			$q_volume  = $stock_data[ $symbol ]['last_volume'];
 			$q_tz      = $stock_data[ $symbol ]['tz'];
