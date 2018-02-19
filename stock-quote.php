@@ -466,9 +466,10 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		 * @param  integer  $decimals      Number of decimal places.
 		 * @param  string   $number_format Which number format to use (dc, sc, cd, sd).
 		 * @param  string   $template      Format of text for quote.
+		 * @param  bool     $raw           Print out content without SPAN wrapper.
 		 * @return string                  Formatted HTMLoutput.
 		 */
-		public function stock_quote( $symbol = 'AAPL', $show = 'symbol', $nolink = false, $class = '', $decimals = null, $number_format = null, $template = null ) {
+		public function stock_quote( $symbol = 'AAPL', $show = 'symbol', $nolink = false, $class = '', $decimals = null, $number_format = null, $template = null, $raw = false ) {
 
 			if ( empty( $symbol ) ) {
 				return;
@@ -546,10 +547,10 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// Assign object elements to vars.
 			$q_symbol  = $symbol;
 			$q_name    = $stock_data[ $symbol ]['symbol']; // ['t']; // No nicename on AlphaVantage.co so use ticker instead.
-			$q_change  = $stock_data[ $symbol ]['change']; // ['c'];
-			$q_price   = $stock_data[ $symbol ]['last_close']; // ['l']; // it's last_close instead of last_open
-			$q_changep = $stock_data[ $symbol ]['changep']; // ['cp'];
-			$q_volume  = $stock_data[ $symbol ]['last_volume'];
+			$q_change  = $raw_change = $stock_data[ $symbol ]['change']; // ['c'];
+			$q_price   = $raw_price = $stock_data[ $symbol ]['last_close']; // ['l']; // it's last_close instead of last_open
+			$q_changep = $raw_changep = $stock_data[ $symbol ]['changep']; // ['cp'];
+			$q_volume  = $raw_volume = $stock_data[ $symbol ]['last_volume'];
 			$q_tz      = $stock_data[ $symbol ]['tz'];
 			$q_ltrade  = $stock_data[ $symbol ]['last_refreshed']; // ['lt'];
 			$q_ltrade  = str_replace( ' 00:00:00', '', $q_ltrade ); // Strip zero time from last trade date string
@@ -605,6 +606,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 			// Value template.
 			$quote_text = $template;
+			// Formatted values
 			$quote_text = str_replace( '%company%', $company_show, $quote_text );
 			$quote_text = str_replace( '%symbol%', $q_symbol, $quote_text );
 			$quote_text = str_replace( '%exch_symbol%', $url_query, $quote_text );
@@ -612,13 +614,22 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$quote_text = str_replace( '%change%', $q_change, $quote_text );
 			$quote_text = str_replace( '%changep%', "{$q_changep}%", $quote_text );
 			$quote_text = str_replace( '%volume%', $q_volume, $quote_text );
+			// Raw values
+			$quote_text = str_replace( '%raw_price%', $raw_price, $quote_text );
+			$quote_text = str_replace( '%raw_change%', $raw_change, $quote_text );
+			$quote_text = str_replace( '%raw_changep%', $raw_changep, $quote_text );
+			$quote_text = str_replace( '%raw_volume%', $raw_volume, $quote_text );
 
-			$out = sprintf(
-				'<span class="%1$s" title="%2$s">%3$s</span>',
-				$class,       // 1
-				$quote_title, // 2
-				$quote_text   // 3
-			);
+			if ( $raw ) {
+				$out = $quote_text;
+			} else {
+				$out = sprintf(
+					'<span class="%1$s" title="%2$s">%3$s</span>',
+					$class,       // 1
+					$quote_title, // 2
+					$quote_text   // 3
+				);
+			}
 
 			unset( $q, $defaults, $legend );
 
@@ -643,12 +654,13 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				'decimals'      => null,
 				'number_format' => $defaults['number_format'],
 				'template'      => '%company% %price% %change% %changep%',
+				'raw'           => false,
 			), $atts );
 
 			if ( ! empty( $atts['symbol'] ) ) {
 				wp_enqueue_script( $this->plugin_slug );
 				$symbol = strip_tags( $atts['symbol'] );
-				return self::stock_quote( $symbol, $atts['show'], $atts['nolink'], $atts['class'], $atts['decimals'], $atts['number_format'], $atts['template'] );
+				return self::stock_quote( $symbol, $atts['show'], $atts['nolink'], $atts['class'], $atts['decimals'], $atts['number_format'], $atts['template'], $atts['raw'] );
 			}
 
 		} // END public function shortcode()

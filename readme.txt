@@ -3,8 +3,8 @@ Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
 Requires at least: 4.4.0
-Tested up to: 4.9.2
-Stable tag: 0.2.0.2
+Tested up to: 4.9.4
+Stable tag: 0.2.0.3
 Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -51,12 +51,12 @@ Use simple shortcode `[stock_quote]` without any parameter in post or page, to d
 You can tune single shortcode with parameters:
 
 * `symbol` - represent single stock symbol (if not provided then use default from settings page)
-* `show` - can be `name` to represent company with Company Name (default), or `symbol` to represent company with Stock Symbol. You must add preferred symbol to˛`Custom Names` textarea on Settings page because Google Finance does not provide nice company names in feeds
+* `show` - can be `name` to represent company with Company Name (default), or `symbol` to represent company with Stock Symbol. You must add preferred symbol to `Custom Names` textarea on Settings page because Google Finance does not provide nice company names in feeds
 * `decimals` - override default number of decimal places for values (default from settings page used if no custom set by shortcode). Valud values are: `1`, `2`, `3` and `4`
 * `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
-* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%` and `%volume%`
+* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%`, `%volume%`, `%raw_price%`, `%raw_change%`, `%raw_changep%`, `%raw_volume%`
+* `raw` - enable printing quote content without wrapping to SPAN with classes. Default is disabled. Can be `1` or `true` for enabled, OR `0` or `false` for disabled.
 * `class` - (optional) custom class name for quote item, if you wish some special styling
-
 
 = Example =
 
@@ -162,6 +162,10 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
+
+= 0.2.0.3 (20180219) =
+* Add: shortcode parameter `raw`
+* Add: template keywords `%raw_price%`, `%raw_change%`, `%raw_changep%` and `%raw_volume%`
 
 = 0.2.0.2 (20180204) =
 * Fix: price amount was taken from `last_open` instead of proper `last_close`
