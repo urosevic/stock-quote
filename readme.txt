@@ -163,6 +163,10 @@ This is initial version of plugin.
 
 == Changelog ==
 
+= 0.2.0.4 (20180604) =
+* Fix: workaround for stuck skipping
+* Add: URL request to unlock fetch
+
 = 0.2.0.3 (20180219) =
 * Add: shortcode parameter `raw`
 * Add: template keywords `%raw_price%`, `%raw_change%`, `%raw_changep%` and `%raw_volume%`

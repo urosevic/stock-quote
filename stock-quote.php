@@ -52,7 +52,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 1;
-		const VER = '0.2.0.2';
+		const VER = '0.2.0.3';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -111,6 +111,9 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// Cleanup transients
 			if ( ! empty( $_GET['stockquote_purge_cache'] ) ) {
 				self::restart_av_fetching();
+			}
+			if ( ! empty( $_GET['stockquote_unlock_fetch'] ) ) {
+				self::unlock_fetch();
 			}
 
 			// Initialize default settings
@@ -716,9 +719,16 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			// Check is currently fetch in progress
 			$progress = get_option( 'stockquote_av_progress', false );
 
-			if ( false != $progress ) {
+			// Workaround for stuck fetching
+			$defaults = $this->defaults;
+			$current_timestamp = time();
+			$last_fetched_timestamp = get_option( 'stockquote_av_last_timestamp', $current_timestamp );
+			$skip_target_timestamp = $last_fetched_timestamp + (int) $defaults['cache_timeout'] + ( 2 * (int) $defaults['timeout'] );
+			$delta_timestamp = $current_timestamp - $skip_target_timestamp;
+			if ( false != $progress && $delta_timestamp < 1000 ) {
 				return array(
-					'message' => 'Stock Quote Skip: Currently fetching another symbol in other thread',
+					'method'  => 'skip',
+					'message' => 'Stock Quote already fetching data. Skip.',
 					'symbol'  => '',
 				);
 			}
