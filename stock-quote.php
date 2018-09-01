@@ -3,7 +3,7 @@
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
 Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.0.4
+Version: 0.2.0.5
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
 License: GNU GPL3
@@ -52,7 +52,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 1;
-		const VER = '0.2.0.4';
+		const VER = '0.2.0.5';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -669,7 +669,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		} // END public function shortcode()
 
 		// Thanks to https://coderwall.com/p/zepnaw/sanitizing-queries-with-in-clauses-with-wpdb-on-wordpress
-		private function get_stock_from_db( $symbols = '' ) {
+		public function get_stock_from_db( $symbols = '' ) {
 			// If no symbols we have to fetch from DB, then exit
 			if ( empty( $symbols ) ) {
 				return;

@@ -226,7 +226,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			// Minus.
 			add_settings_field(
 				$this->option_name . 'quote_minus',
-				__( 'Netagive Change', 'wpausq' ),
+				__( 'Negative Change', 'wpausq' ),
 				array( &$this, 'settings_field_colour_picker' ),
 				$wpau_stockquote->plugin_slug,
 				'wpausq_default',

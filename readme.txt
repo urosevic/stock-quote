@@ -163,6 +163,9 @@ This is initial version of plugin.
 
 == Changelog ==
 
+= 0.2.0.5 (20180901) =
+* Fix: `Netagive` spelling error (thanks to @eigood)
+
 = 0.2.0.4 (20180604) =
 * Fix: workaround for stuck skipping
 * Add: URL request to unlock fetch
