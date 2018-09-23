@@ -21,9 +21,7 @@ global $wpau_stockquote;
 	<div class="stock_quote_wrapper">
 		<div class="content_cell">
 			<form method="post" action="options.php">
-				<?php settings_fields( 'wpausq_general' ); ?>
-				<?php settings_fields( 'wpausq_default' ); ?>
-				<?php settings_fields( 'wpausq_advanced' ); ?>
+				<?php settings_fields( 'wpau_stock_quote' ); ?>
 				<?php do_settings_sections( $wpau_stockquote->plugin_slug ); ?>
 				<?php submit_button(); ?>
 			</form>
@@ -39,8 +37,14 @@ global $wpau_stockquote;
 			<a href="https://wordpress.org/support/view/plugin-reviews/stock-quote#postform" class="ausq-button" target="_blank">Review this plugin</a>
 
 			<h2><?php esc_attr_e( 'Disclaimer', 'stock-quote' ); ?></h2>
-			<p class="description">Data for Stock Quote has been provided by AlphaVantage.co.</p>
-
+			<p class="description"><?php
+				printf(
+				__( 'Since %1$s version %2$s source for all stock data used in plugin is provided by %3$s, displayed for informational and educational purposes only and should not be considered as investment advise. <br />Author of the plugin does not accept liability or responsibility for your use of plugin, including but not limited to trading and investment results.' ),
+				__( 'Stock Quote', 'wpaust' ),
+				'0.2.0',
+				'<strong>Alpha Vantage</strong>'
+				);
+			?></p>
 		</div><!-- .sidebar_container -->
 	</div><!-- .stock_quote_wrapper -->
 
@@ -59,6 +63,19 @@ global $wpau_stockquote;
 				<li><code><strong>class</strong></code> <?php _e( 'custom class name for quote item', 'stock-quote' ); ?></li>
 			</ul>
 		</p>
+
+		<h2><?php esc_attr_e( 'Supported Stock Exchanges', 'wpaust' ); ?></h2>
+		<ul>
+			<?php
+			foreach ( $wpau_stockquote::$exchanges as $symbol => $name ) {
+				printf(
+					'<li><strong>%1$s</strong> - %2$s</li>',
+					$symbol,
+					$name
+				);
+			}
+			?>
+		</ul>
 	</div><!-- .help_cell -->
 </div>
 

@@ -7,6 +7,9 @@ jQuery(document).ready(function($) {
 		e.preventDefault();
 		var fetch_button = this;
 		var fetch_button_stop = $('button[name="sq_force_data_fetch_stop"]');
+		var av_api_tier = $('select[name="stockquote_defaults[av_api_tier]"]').val();
+		var av_api_timeout = ( 60 / av_api_tier ) * 1000;
+
 		// disable button
 		$(fetch_button).prop('disabled',true);
 		$(fetch_button_stop).addClass('enabled');
@@ -38,13 +41,14 @@ jQuery(document).ready(function($) {
 							if ( response.message.indexOf('Operation timed out') >= 0 ) {
 								$('.sq_force_data_fetch').append( '[Timeout] ' + response.symbol + '<br />');
 							} else if ( response.message.indexOf('Invalid API call') >= 0 ) {
+								var fetch_url = stockQuoteJs.avurl;
 								$('.sq_force_data_fetch').append( '[Invalid API call] ' + response.symbol + ' (<a href="' + stockQuoteJs.avurl + response.symbol + '" target="_blank">test</a>)<br />');
 							} else {
 								$('.sq_force_data_fetch').append( '[OK] ' + response.symbol + '<br />');
 							}
 							setTimeout(function() {
 								fetchNextSymbol();
-							}, 2000);
+							}, av_api_timeout);
 						} else {
 							if ( response.message != 'DONE' ) {
 								$('.sq_force_data_fetch').append( '<br />[' + response.symbol + '] ' + response.message );

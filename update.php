@@ -104,3 +104,14 @@ function au_stockquote_update_routine_1() {
 	dbDelta( $sql );
 
 } // END function au_stockquote_update_routine_1()
+
+// Add av_api_tier setting
+function au_stockquote_update_routine_2() {
+	$defaults = get_option( 'stockquote_defaults' );
+	if ( ! isset( $defaults['av_api_tier'] ) ) {
+		try {
+			$defaults['av_api_tier'] = 'free';
+			update_option( 'stockquote_defaults', $defaults );
+		} catch (Exception $w) {}
+	}
+} // END function au_stockquote_update_routine_2()

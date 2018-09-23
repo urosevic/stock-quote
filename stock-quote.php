@@ -3,7 +3,7 @@
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
 Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.0.6
+Version: 0.2.1
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
 License: GNU GPL3
@@ -51,8 +51,8 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	 */
 	class Wpau_Stock_Quote {
 
-		const DB_VER = 1;
-		const VER = '0.2.0.6';
+		const DB_VER = 2;
+		const VER = '0.2.1';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -220,20 +220,21 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		 */
 		function init_options() {
 			$init = array(
-				'all_symbols'   => 'AAPL',
-				'symbol'        => 'AAPL',
-				'show'          => 'name',
-				'zero'          => '#454545',
-				'minus'         => '#D8442F',
-				'plus'          => '#009D59',
-				'cache_timeout' => '180', // 3 minutes
-				'error_message' => 'Unfortunately, we could not get stock quote %symbol% this time.',
-				'legend'        => "AAPL;Apple Inc.\nFB;Facebook, Inc.\nCSCO;Cisco Systems, Inc.\nGOOG;Google Inc.\nINTC;Intel Corporation\nLNKD;LinkedIn Corporation\nMSFT;Microsoft Corporation\nTWTR;Twitter, Inc.\nBABA;Alibaba Group Holding Limited\nIBM;International Business Machines Corporation\n.DJI;Dow Jones Industrial Average\nEURGBP;Euro (€) ⇨ British Pound Sterling (£)",
-				'style'         => '',
-				'timeout'       => 4,
+				'all_symbols'     => 'AAPL',
+				'symbol'          => 'AAPL',
+				'show'            => 'name',
+				'zero'            => '#454545',
+				'minus'           => '#D8442F',
+				'plus'            => '#009D59',
+				'cache_timeout'   => '180', // 3 minutes
+				'error_message'   => 'Unfortunately, we could not get stock quote %symbol% this time.',
+				'legend'          => "AAPL;Apple Inc.\nFB;Facebook, Inc.\nCSCO;Cisco Systems, Inc.\nGOOG;Google Inc.\nINTC;Intel Corporation\nLNKD;LinkedIn Corporation\nMSFT;Microsoft Corporation\nTWTR;Twitter, Inc.\nBABA;Alibaba Group Holding Limited\nIBM;International Business Machines Corporation\n.DJI;Dow Jones Industrial Average\nEURGBP;Euro (€) ⇨ British Pound Sterling (£)",
+				'style'           => '',
+				'timeout'         => 4,
 				'loading_message' => 'Loading stock data...',
-				'number_format' => 'dc',
-				'decimals'      => 2,
+				'number_format'   => 'dc',
+				'decimals'        => 2,
+				'av_api_tier'     => 5, // 5 = free
 			);
 
 			add_option( $this->plugin_option, $init, '', 'no' );
@@ -340,7 +341,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					'stockQuoteJs',
 					array(
 						'ajax_url' => admin_url( 'admin-ajax.php' ),
-						'avurl'    => 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&apikey=' . $this->defaults['avapikey'] . '&symbol=',
+						'avurl'    => 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&datatype=json&apikey=' . $this->defaults['avapikey'] . '&symbol=',
 					)
 				);
 				wp_enqueue_script( $this->plugin_slug . '-admin' );
@@ -1142,7 +1143,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		 * @param  string $symbols Unfiltered value of stock symbols
 		 * @return string          Sanitized value of stock symbols
 		 */
-		public function sanitize_symbols( $symbols ) {
+		public static function sanitize_symbols( $symbols ) {
 			$symbols = preg_replace( '/[^0-9A-Z\=\.\,\:\^\-]+/', '', strtoupper( $symbols ) );
 			return $symbols;
 		} // END public function sanitize_symbols( $symbols )

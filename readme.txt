@@ -4,7 +4,7 @@ Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
 Requires at least: 4.4.0
 Tested up to: 4.9.6
-Stable tag: 0.2.0.4
+Stable tag: 0.2.1
 Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -37,6 +37,16 @@ Author of the **Stock Quote** plugin does not accept liability or responsibility
 * Plugin uses native WordPress function to get and cache data from AlphaVantage.co API for predefined duration of time
 
 For feature requests or help [send feedback](https://urosevic.net/wordpress/plugins/stock-quote/ "Official plugin page") or use support forum on WordPress.
+
+== How It Works? ==
+
+1. When front-end is loaded in browser, plugin will render quote placeholder in place where you have inserted shortcode.
+1. Right after page is loaded, AJAX call will request quote content and inject it inside quote placeholder. That quote is retrieved as a cached value in database.
+1. Couple seconds latter, second AJAX request will initiate background quote update from WordPress.
+1. If `Cache Timeout` period has expired, plugin will pick first symbol from `All Stock Symbols` field. Each time it will pick next symbol.
+1. Without disturbing page rendering and speed to get quote from database, plugin in background retrieve data from AlphaVantage.co for picked symbol.
+1. If quote is successfully retrieved, plugin will save value for that symbol in database.
+1. New fetched quote for symbol will be displayed on front-end only after page reload but not right after updated quote get fetched from AlphaVantage.co!
 
 == How To Use ==
 
@@ -150,6 +160,15 @@ Add this to your template file (you also can add custom parameters for shortcode
 
 You'll need to set company name to Custom Names field on plugin settings page.
 
+= My quote do not update or have large delay =
+
+There is couple possible causes for this issue:
+1. Your website do not have enough visits to fetch each symbol from `All Stock Symbols` field. Solution: We are working on `cron` driven updates, but we do not have ETA for that release.
+1. You have set too short `Cache Timeout` value so plugin do not have enough time to fetch updated quote for each symbol in `All Stock Symbols`. Solution: Increase `Cache Timeout` value.
+1. You have too long `Cache Timeout` value so plugin skip fetching of updated quotes. Solution: decrease `Cache Timeout` value below 600 (that means below 10 minutes).
+1. You have set too short `Fetch Timeout` so plugin do not have enough time to successfully retrieve symbol from AlphaVantage.co. Solution: Increase `Fetch Timeout` by 2-3 second than you have set already. If that still does not work, try with another 2-3 seconds.
+1. When you hover over quote on front-end, you should see last trade date. If date is older than expected (including last trade day), it's possible that something stuck in plugin. Solution: Enable debugging in WordPress as explained in official article [https://codex.wordpress.org/Debugging_in_WordPress#Example_wp-config.php_for_Debugging](https://codex.wordpress.org/Debugging_in_WordPress#Example_wp-config.php_for_Debugging) and after couple of hours disable debugging, upload wp-content/stock-quote.log to DropBox/Google Drive/etc and provide link to log in email sent throug our contact form at [https://urosevic.net/c/](https://urosevic.net/c/)
+
 == Upgrade Notice ==
 
 = 0.2.0 =
@@ -162,6 +181,22 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
+
+= 0.2.1 (20180923) =
+-* Improve: Make Force Fetch to wait between each symbol fetch regarding to the API Tier
+* Improve: Remove duplicate symbols on settings update
+* Simplify: Merge 3 settings sections to single register_settings
+-* Improve: Move routine to extract symbol to fetch to self method `get_symbol_to_fetch()`
+-* Improve: Move stock data to DB to self method `data_to_db()`
+* Change: Make method `get_stock_from_db()` public so user can access Stock data in DB from custom functions
+* Change: Move method `sanitize_symbols()` to main class and make it public static so user can access it from custom functions
+* Add Alpha Vantage Tier option for better fetch timeout control
+-* Switch to GLOBAL_QUOTE API mode and eliminate requirement to calculate change amount from TIME_SERIES_DAILY and TIME_SERIES_INTRADAY
+-* Remove Intraday option from settings
+
+* Fix: Allow dash character in symbols (eg. `STO:ERIC-B`)
+* (20180609) Readme: add How It Works
+* Readme: Update FAQ with `stuck quote` question
 
 = 0.2.0.5 (20180901) =
 * Fix: `Netagive` spelling error (thanks to @eigood)

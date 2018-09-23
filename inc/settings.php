@@ -45,10 +45,23 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 
 			// Add general settings section.
 			add_settings_section(
-				'wpausq_general',
-				__( 'General', 'wpausq' ),
-				array( &$this, 'settings_general_section_description' ),
+				'wpau_stock_quote',
+				__( 'Settings', 'wpausq' ),
+				array( &$this, 'settings_section_description' ),
 				$wpau_stockquote->plugin_slug
+			);
+
+			// Add setting's fields.
+			// Add separator for General section
+			add_settings_field(
+				$this->option_name . 'general_section',
+				__( 'General', 'wpaust' ),
+				array( &$this, 'settings_field_section_divider' ),
+				$wpau_stockquote->plugin_slug,
+				'wpau_stock_quote',
+				array(
+					'description' => __( 'Predefine general settings for Stock Ticker. Here you can set API key and symbols used on whole website (in all ticker).', 'wpaust' ),
+				)
 			);
 
 			// Add setting's fields.
@@ -57,7 +70,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'AlphaVantage.co API Key', 'wpausq' ),
 				array( &$this, 'settings_field_input_password' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_general',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[avapikey]',
 					'description' => sprintf(
@@ -77,12 +90,48 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 					'value'       => $this->defaults['avapikey'],
 				)
 			);
+
+			add_settings_field(
+				$this->option_name . 'av_api_tier',
+				__( 'AlphaVantage.co API Key Tier', 'wpaust' ),
+				array( &$this, 'settings_field_select' ),
+				$wpau_stockquote->plugin_slug,
+				'wpau_stock_quote',
+				array(
+					'field'       => $this->option_name . '[av_api_tier]',
+					'description' => sprintf(
+						wp_kses(
+							__( 'Which Alpha Vantage API Key membership do you have (<a href="%1$s" target="_blank">%2$s</a> or <a href="%3$s" target="_blank">%4$s</a>)?', 'wpaust' ),
+							array(
+								'a' => array(
+									'href'   => array(),
+									'target' => array( '_blank' ),
+								),
+							)
+						),
+						esc_url( 'https://www.alphavantage.co/support/#api-key' ),
+						__( 'Free', 'wpaust' ),
+						esc_url( 'https://www.alphavantage.co/premium/' ),
+						__( 'Premium', 'wpaust' )
+					),
+					'items'       => array(
+						'5'   => __( 'Free (5 requests/min)', 'wpaust' ),
+						'15'  => __( 'Premium (15 requests/min)', 'wpaust' ),
+						'60'  => __( 'Premium (60 requests/min)', 'wpaust' ),
+						'120' => __( 'Premium (120 requests/min)', 'wpaust' ),
+						'360' => __( 'Premium (360 requests/min)', 'wpaust' ),
+						'600' => __( 'Premium (600 requests/min)', 'wpaust' ),
+					),
+					'value' => $this->defaults['av_api_tier'],
+				)
+			);
+
 			add_settings_field(
 				$this->option_name . 'all_symbols',
 				__( 'All Stock Symbols', 'wpausq' ),
 				array( &$this, 'settings_field_input_text' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_general',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[all_symbols]',
 					'description' => __( 'You can use some or all of those symbils in any ticker on website. Please note, you have to define which symbols you will use per widget/shortcode. Enter stock symbols separated with comma.', 'wpausq' ),
@@ -95,7 +144,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Loading Message', 'wpausq' ),
 				array( &$this, 'settings_field_input_text' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_general',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[loading_message]',
 					'description' => __( 'Customize message displayed to visitor until plugin load stock data through AJAX.', 'wpausq' ),
@@ -109,7 +158,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Error Message', 'wpausq' ),
 				array( &$this, 'settings_field_input_text' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_general',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[error_message]',
 					'description' => __(
@@ -126,30 +175,29 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Force data fetch', 'wpausq' ),
 				array( &$this, 'settings_js_forcedatafetch' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_general'
+				'wpau_stock_quote'
 			);
 
-			// --- Register setting General so $_POST handling is done ---
-			register_setting(
-				'wpausq_general',
-				$this->option_name,
-				array( &$this, 'sanitize_options' )
+			// Add setting's fields.
+			// Add separator for Defaults section
+			add_settings_field(
+				$this->option_name . 'default_section',
+				__( 'Defaults', 'wpaust' ),
+				array( &$this, 'settings_field_section_divider' ),
+				$wpau_stockquote->plugin_slug,
+				'wpau_stock_quote',
+				array(
+					'description' => __( 'Predefine default settings for Stock Ticker. Here you can set stock symbols and how you wish to present companies in ticker.', 'wpaust' ),
+				)
 			);
 
-			// Add default settings section.
-			add_settings_section(
-				'wpausq_default',
-				__( 'Default', 'wpausq' ),
-				array( &$this, 'settings_default_section_description' ),
-				$wpau_stockquote->plugin_slug
-			);
 			// Add setting's fields.
 			add_settings_field(
 				$this->option_name . 'symbol',
 				__( 'Stock Symbol', 'wpausq' ),
 				array( &$this, 'settings_field_input_text' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[symbol]',
 					'description' => __( 'Enter default stock symbol', 'wpausq' ),
@@ -162,7 +210,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Show Company as', 'wpausq' ),
 				array( &$this, 'settings_field_select' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[show]',
 					'description' => __( 'What to show as Company identifier by default', 'wpausq' ),
@@ -178,7 +226,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Number format', 'wpausq' ),
 				array( &$this, 'settings_field_select' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[number_format]',
 					'description' => __( 'Select default number format', 'wpausq' ),
@@ -196,7 +244,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Decimal places', 'wpausq' ),
 				array( &$this, 'settings_field_select' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[decimals]',
 					'description' => __( 'Select amount of decimal places for numbers', 'wpausq' ),
@@ -216,7 +264,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Unchanged Quote', 'wpausq' ),
 				array( &$this, 'settings_field_colour_picker' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[zero]',
 					'description' => __( 'Set colour for unchanged quote', 'wpausq' ),
@@ -229,7 +277,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Negative Change', 'wpausq' ),
 				array( &$this, 'settings_field_colour_picker' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[minus]',
 					'description' => __( 'Set colour for negative change', 'wpausq' ),
@@ -242,7 +290,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Positive Change', 'wpausq' ),
 				array( &$this, 'settings_field_colour_picker' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_default',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[plus]',
 					'description' => __( 'Set colour for positive change', 'wpausq' ),
@@ -250,20 +298,19 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				)
 			);
 
-			// --- Register setting Default so $_POST handling is done ---
-			register_setting(
-				'wpausq_default',
-				$this->option_name,
-				array( &$this, 'sanitize_options' )
+			// Add setting's fields.
+			// Add separator for Advanced section
+			add_settings_field(
+				$this->option_name . 'advanced_section',
+				__( 'Advanced', 'wpaust' ),
+				array( &$this, 'settings_field_section_divider' ),
+				$wpau_stockquote->plugin_slug,
+				'wpau_stock_quote',
+				array(
+					'description' => __( 'Set advanced options important for caching quote feeds.', 'wpaust' ),
+				)
 			);
 
-			// Add advanced settings section.
-			add_settings_section(
-				'wpausq_advanced',
-				__( 'Advanced', 'wpausq' ),
-				array( &$this, 'settings_advanced_section_description' ),
-				$wpau_stockquote->plugin_slug
-			);
 			// Add setting's fields.
 			// Custom name.
 			add_settings_field(
@@ -271,7 +318,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Custom Names', 'wpausq' ),
 				array( &$this, 'settings_field_textarea' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_advanced',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[legend]',
 					'class'       => 'widefat',
@@ -286,7 +333,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Cache Timeout', 'wpausq' ),
 				array( &$this, 'settings_field_input_number' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_advanced',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[cache_timeout]',
 					'description' => __( 'Define cache timeout for single quote set, in seconds', 'wpausq' ),
@@ -303,7 +350,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Fetch Timeout', 'wpausq' ),
 				array( &$this, 'settings_field_input_number' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_advanced',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[timeout]',
 					'description' => __( 'Define timeout to fetch quote feed before give up and display error message, in seconds (default is 4)', 'wpausq' ),
@@ -321,7 +368,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				__( 'Custom Style', 'wpausq' ),
 				array( &$this, 'settings_field_textarea' ),
 				$wpau_stockquote->plugin_slug,
-				'wpausq_advanced',
+				'wpau_stock_quote',
 				array(
 					'field'       => $this->option_name . '[style]',
 					'class'       => 'widefat',
@@ -333,7 +380,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 
 			// --- Register setting Advanced so $_POST handling is done ---
 			register_setting(
-				'wpausq_advanced',
+				'wpau_stock_quote',
 				$this->option_name,
 				array( &$this, 'sanitize_options' )
 			);
@@ -351,35 +398,39 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			<?php
 		}
 
-		public function settings_general_section_description() {
+		/**
+		 * Print description for General section
+		 */
+		public function settings_section_description() {
 			// Think of this as help text for the section.
 			esc_attr_e(
-				'Predefine general settings for Stock Quote. Here you can set API key and symbols used on whole website (in all quotes).',
-				'wpausq'
-			);
-		}
-		public function settings_default_section_description() {
-			// Think of this as help text for the section.
-			esc_attr_e(
-				'Predefine default settings for Stock Quote. Here you can set stock symbols and how you wish to present companies in page.',
-				'wpausq'
-			);
-		}
-		public function settings_advanced_section_description() {
-			// Think of this as help text for the section.
-			esc_attr_e(
-				'Set advanced options important for caching quote feeds.',
-				'wpausq'
+				'',
+				'wpaust'
 			);
 		}
 
 		/**
+		 * Print divider for section
+		 * @return [type] [description]
+		 */
+		public function settings_field_section_divider( $args ) {
+			echo '<hr />';
+			if ( ! empty( $args['description'] ) ) {
+				printf(
+					'<p class="description">%s</p><hr />',
+					$args['description']
+				);
+			}
+		}
+
+		/**
 		 * This function provides text inputs for settings fields
-		 * @param  array $args Array of field options
+		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_input_text( $args ) {
 			printf(
-				'<input type="text" name="%1$s" id="%1$s" value="%2$s" class="%3$s" /><p class="description">%4$s</p>',
+				'<input type="text" name="%s" id="%s" value="%s" class="%s" data-lpignore="true" /><p class="description">%s</p>',
+				esc_attr( $args['field'] ),
 				esc_attr( $args['field'] ),
 				esc_attr( $args['value'] ),
 				sanitize_html_class( $args['class'] ),
@@ -393,7 +444,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 		 */
 		public function settings_field_input_password( $args ) {
 			printf(
-				'<input type="password" name="%s" id="%s" value="%s" class="%s" /><p class="description">%s</p>',
+				'<input type="password" name="%s" id="%s" value="%s" class="%s" data-lpignore="true" /><p class="description">%s</p>',
 				esc_attr( $args['field'] ),
 				esc_attr( $args['field'] ),
 				esc_attr( $args['value'] ),
@@ -407,6 +458,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 		 * @param  array $args Array of field arguments.
 		 */
 		public function settings_field_input_number( $args ) {
+			$args['description'] = self::format_description( esc_html( $args['description'] ) );
 			printf(
 				'<input type="number" name="%1$s" id="%2$s" value="%3$s" min="%4$s" max="%5$s" step="%6$s" class="%7$s" /><p class="description">%8$s</p>',
 				esc_attr( $args['field'] ),            // 1
@@ -416,25 +468,9 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				(int) $args['max'],                    // 5
 				(int) $args['step'],                   // 6
 				sanitize_html_class( $args['class'] ), // 7
-				esc_html( $args['description'] )       // 8
+				$args['description']                   // 8
 			);
 		} // END public function settings_field_input_number($args)
-
-		/**
-		 * This function provides checkbox for settings fields
-		 * @param  array $args Array of field arguments.
-		 */
-		public function settings_field_checkbox( $args ) {
-			$checked = ( ! empty( $args['value'] ) ) ? 'checked="checked"' : '';
-			printf(
-				'<label for="%1$s"><input type="checkbox" name="%1$s" id="%1$s" value="1" class="%2$s" %3$s />%4$s</label>',
-				esc_attr( $args['field'] ),
-				$args['class'],
-				$checked,
-				$args['description']
-			);
-
-		} // END public function settings_field_checkbox($args) {
 
 		/**
 		 * This function provides textarea for settings fields
@@ -477,8 +513,38 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 					sanitize_text_field( $val ) // 3
 				);
 			}
-			printf( '</select><p class="description">%s</p>', esc_html( $args['description'] ) );
+			printf(
+				'</select><p class="description">%s</p>',
+				wp_kses(
+					$args['description'],
+					array(
+						'a' => array(
+							'href'   => array(),
+							'target' => array( '_blank' ),
+						),
+						'strong',
+						'em',
+						'pre',
+						'code',
+					)
+				)
+			);
 		} // END public function settings_field_select($args)
+
+		/**
+		 * This function provides checkbox for settings fields
+		 * @param  array $args Array of field arguments.
+		 */
+		public function settings_field_checkbox( $args ) {
+			$checked = ( ! empty( $args['value'] ) ) ? 'checked="checked"' : '';
+			printf(
+				'<label for="%1$s"><input type="checkbox" name="%1$s" id="%1$s" value="1" class="%2$s" %3$s />%4$s</label>',
+				esc_attr( $args['field'] ),
+				$args['class'],
+				$checked,
+				self::format_description( $args['description'] )
+			);
+		} // END public function settings_field_checkbox($args) {
 
 		/**
 		 * Generate colour picker field
@@ -493,6 +559,17 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				esc_html( $args['description'] )
 			);
 		} // END public function settings_field_colour_picker($args)
+
+		/**
+		 * Basic markdown formatter for descriptions
+		 * @param  string $text Raw ASCII text
+		 * @return string       HTML formatted text
+		 */
+		function format_description( $text ) {
+			$pattern = '/(\*\*)([^\*]+)(\*\*)/';
+			$replacement = '<strong>${2}</strong>';
+			return preg_replace( $pattern, $replacement, $text );
+		} // END function format_description( $text )
 
 		/**
 		 * Sanitize settings options
@@ -516,14 +593,19 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 						// Allow only numbers (0-9) and English uppercase letters (A-Z)
 						$value = preg_replace( '/[^0-9A-Z]+/', '', $value );
 						break;
+					case 'av_api_tier':
+						if ( ! in_array( $value, array( 5, 15, 60, 120, 360, 600 ) ) ) {
+							$value = 5;
+						}
+						break;
 					case 'symbols':
 						// Always uppercase
-						$value = $wpau_stockquote->sanitize_symbols( $value );
+						$value = Wpau_Stock_Quote::sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'symbols' );
 						break;
 					case 'all_symbols':
 						// Always uppercase
-						$value = $wpau_stockquote->sanitize_symbols( $value );
+						$value = Wpau_Stock_Quote::sanitize_symbols( $value );
 						$value = self::alpha_symbols( $value, 'all_symbols' );
 						// Add error if there is not supported exchanges
 						break;
@@ -637,6 +719,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 			$symbols_arr = explode( ',', $symbols );
 			// Remove unsupported stock exchanges from global array to prevent API errors
 			foreach ( $symbols_arr as $symbol_pos => $symbol_to_check ) {
+				$symbol_to_check = trim( $symbol_to_check );
 				// If there is semicolon, it's symbol with exchange
 				if ( strpos( $symbol_to_check, ':' ) ) {
 					// Explode symbol so we can get exchange code
@@ -647,11 +730,13 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 					} else {
 						$symbols_removed[] = $symbol_to_check;
 					}
-				} else {
+				} else if ( ! empty( $symbol_to_check ) ) {
 					// Add symbol w/o exchange to query array
 					$symbols_supported[] = $symbol_to_check;
 				}
 			}
+			// Remove duplicate symbols
+			$symbols_supported = array_unique($symbols_supported);
 			// Set back supported symbols
 			$symbols = join( ',', $symbols_supported );
 			// If we have removed symbols, add settings error message
