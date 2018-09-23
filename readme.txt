@@ -3,7 +3,7 @@ Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
 Requires at least: 4.4.0
-Tested up to: 4.9.6
+Tested up to: 4.9.8
 Stable tag: 0.2.1
 Requires PHP: 5.5
 License: GPLv3 or later
@@ -171,6 +171,9 @@ There is couple possible causes for this issue:
 
 == Upgrade Notice ==
 
+= 0.2.1 =
+Alphavantage.co API endpoint change to GLOBAL_QUOTE for more precize data
+
 = 0.2.0 =
 Broken functionality fix
 
@@ -183,6 +186,7 @@ This is initial version of plugin.
 == Changelog ==
 
 = 0.2.1 (20180923) =
+* Improve: statuses and messages in fetch log
 * Improve: Make Force Fetch to wait between each symbol fetch regarding to the API Tier
 * Improve: Remove duplicate symbols on settings update
 * Simplify: Merge 3 settings sections to single register_settings
@@ -191,8 +195,9 @@ This is initial version of plugin.
 * Change: Make method `get_stock_from_db()` public so user can access Stock data in DB from custom functions
 * Change: Move method `sanitize_symbols()` to main class and make it public static so user can access it from custom functions
 * Add Alpha Vantage Tier option for better fetch timeout control
+* Add to settings page list of stock exchanges supported by AlphaVantage
 * Switch to GLOBAL_QUOTE API mode and eliminate requirement to calculate change amount from TIME_SERIES_DAILY and TIME_SERIES_INTRADAY
-* Fix: Allow dash character in symbols (eg. `STO:ERIC-B`)
+* Fix: Allow dash character in symbols (eg. `STO:ERIC-B`) (thanks to @iarwain)
 * (20180609) Readme: add How It Works
 * Readme: Update FAQ with `stuck quote` question
 

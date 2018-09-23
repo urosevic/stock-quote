@@ -390,9 +390,11 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 
 		public function settings_js_forcedatafetch() {
 			?>
-			<p class="description">After you update settings, you can force initial stock data fetching by click on button below.<br />
-			If you get too much <code>[Timeout]</code> statuses during fetch, try to increase Fetch Timeout option, save settings and fetch data again.<br />
-			If you get any <code>[Invalid API call]</code> for same symbol multiple times, then AlphaVantage.co does not have that symbol in TIME_SERIES_DAILY (you should remove faulty symbol from <strong>All Stock Symbols</strong>).</p>
+			<p class="description">After you update settings, you can force stock data fetch by click on button below.<br />
+			Status <code>[WAIT]</code> is normal. It's triggeerd to prevend exceeded AlphaVantage.co API Tier timeout.<br />
+			Status <code>[SKIP]</code> is shown in case when AlphaVantage.co provide empty response for symbol. You should check proper format for that symbil (for example currency always should end with <string>=X</string> - <code>EURGBP=X</code>).<br />
+			If you get too much <code>[TIMEOUT]</code> statuses during fetch, try to increase <strong>Fetch Timeout</strong> option, save settings and fetch data again.<br />
+			If you get any <code>[INVALID]</code> status for same symbol multiple times, then AlphaVantage.co does not have that symbol in GLOBAL_QUOTE and you should remove that faulty symbol from <strong>All Stock Symbols</strong>.</p>
 			<button name="sq_force_data_fetch" class="button button-primary">Fetch Stock Data Now!</button> <button name="sq_force_data_fetch_stop" class="button button-secondary">Stop Fetch</button>
 			<div class="sq_force_data_fetch"></div>
 			<?php

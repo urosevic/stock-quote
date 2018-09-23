@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
 		var av_api_tier = $('select[name="stockquote_defaults[av_api_tier]"]').val();
 		var av_api_timeout = ( 60 / av_api_tier ) * 1000;
 
-		// disable button
+		/* Disable Fetch button */
 		$(fetch_button).prop('disabled',true);
 		$(fetch_button_stop).addClass('enabled');
 		/* First reset fetching loop */
@@ -23,8 +23,9 @@ jQuery(document).ready(function($) {
 				'action': 'stockquote_purge_cache'
 			}
 		}).done( function(response) {
-				// Update log container
-				$('.sq_force_data_fetch').html( 'Reset fetching loop and fetch data again. Please wait...<br /><br />' );
+				/* Restart log container */
+				$('.sq_force_data_fetch').html( 'Reset fetching loop and fetch data again.<br />' );
+				$('.sq_force_data_fetch').append( 'Between each symbol fetch we will wait ' + (av_api_timeout/1000) + ' second(s) to fullfill API Key Tier rules. Please wait...<br /><br />' );
 				function fetchNextSymbol() {
 					/* Then do AJAX request */
 					$.ajax({
@@ -37,35 +38,31 @@ jQuery(document).ready(function($) {
 						}
 					}).done(function(response) {
 						if ( ! response.done && 'true' != $(fetch_button_stop).data('stop') ) {
-							console.log(response);
-							// different progress character for timedout request
-							if ( response.message.indexOf('Operation timed out') >= 0 ) {
-								$('.sq_force_data_fetch').append( '[Timeout] ' + response.symbol + '<br />');
-							} else if ( response.message.indexOf('Invalid API call') >= 0 ) {
-								var fetch_url = stockQuoteJs.avurl;
-								$('.sq_force_data_fetch').append( '[Invalid API call] ' + response.symbol + ' (<a href="' + stockQuoteJs.avurl + response.symbol + '" target="_blank">test</a>)<br />');
-							} else if ( response.status == 'wait' ) {
-								$('.sq_force_data_fetch').append( '[WAIT] ' + response.message + '<br />');
-							} else if ( response.status == 'skip' ) {
-								$('.sq_force_data_fetch').append( '[SKIP] ' + response.message + '<br />');
+							if ( $.inArray(response.status, ['wait','skip','timeout','invalid','success']) >= 0 ) {
+								var msg = '<strong>' + response.symbol + '</strong> | <em>' + response.message + '</em>';
+								if ($.inArray(response.status, ['timeout','invalid']) >= 0) {
+									msg += ' (<a href="' + stockQuoteJs.avurl + response.symbol + '" target="_blank">test</a>)';
+								}
+								msg = '[' + response.status.replace('success','ok').toUpperCase() + '] ' + msg + '<br />';
 							} else {
-								$('.sq_force_data_fetch').append( '[OK] ' + response.symbol + '<br />');
+								msg = '[?] <strong>' + response.symbol + '</strong> | <em>' + response.message + '</em><br />';
 							}
+							$('.sq_force_data_fetch').append(msg);
 							setTimeout(function() {
 								fetchNextSymbol();
 							}, av_api_timeout);
 						} else {
 							if ( response.message != 'DONE' ) {
-								$('.sq_force_data_fetch').append( '<br />[' + response.symbol + '] ' + response.message );
+								$('.sq_force_data_fetch').append( '<br />[STOP] ' + response.symbol + ': ' + response.message + '<br />Fetch interrupted by user.' );
 							} else {
 								$('.sq_force_data_fetch').append( '<br />DONE' );
 							}
-							// Enable button again when all is finished
+							/* Enable button again when all is finished */
 							$(fetch_button).prop('disabled',false);
 							$(fetch_button_stop).removeClass('enabled').data('stop','false');
 						}
 					}).fail(function(response) {
-						$('.sq_force_data_fetch').append( '<br />[Error] ' + response.message );
+						$('.sq_force_data_fetch').append( '<br />[ERROR] ' + response.message );
 					});
 				};
 				fetchNextSymbol();

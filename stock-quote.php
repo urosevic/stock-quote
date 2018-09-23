@@ -445,6 +445,10 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				$result['status'] = 'wait';
 			} else if ( strpos( $response['message'], 'empty response' ) !== false ) {
 				$result['status'] = 'skip';
+			} else if ( strpos( $response['message'], 'Operation timed out' ) !== false ) {
+				$result['status'] = 'timeout';
+			} else if ( strpos( $response['message'], 'Invalid API call' ) !== false ) {
+				$result['status'] = 'invalid';
 			} else if ( strpos( $response['message'], 'no need to start new fetch' ) !== false ) {
 				$result['done'] = true;
 				$result['message'] = 'DONE';
