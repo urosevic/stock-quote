@@ -37,12 +37,17 @@ jQuery(document).ready(function($) {
 						}
 					}).done(function(response) {
 						if ( ! response.done && 'true' != $(fetch_button_stop).data('stop') ) {
+							console.log(response);
 							// different progress character for timedout request
 							if ( response.message.indexOf('Operation timed out') >= 0 ) {
 								$('.sq_force_data_fetch').append( '[Timeout] ' + response.symbol + '<br />');
 							} else if ( response.message.indexOf('Invalid API call') >= 0 ) {
 								var fetch_url = stockQuoteJs.avurl;
 								$('.sq_force_data_fetch').append( '[Invalid API call] ' + response.symbol + ' (<a href="' + stockQuoteJs.avurl + response.symbol + '" target="_blank">test</a>)<br />');
+							} else if ( response.status == 'wait' ) {
+								$('.sq_force_data_fetch').append( '[WAIT] ' + response.message + '<br />');
+							} else if ( response.status == 'skip' ) {
+								$('.sq_force_data_fetch').append( '[SKIP] ' + response.message + '<br />');
 							} else {
 								$('.sq_force_data_fetch').append( '[OK] ' + response.symbol + '<br />');
 							}

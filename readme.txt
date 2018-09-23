@@ -183,17 +183,15 @@ This is initial version of plugin.
 == Changelog ==
 
 = 0.2.1 (20180923) =
--* Improve: Make Force Fetch to wait between each symbol fetch regarding to the API Tier
+* Improve: Make Force Fetch to wait between each symbol fetch regarding to the API Tier
 * Improve: Remove duplicate symbols on settings update
 * Simplify: Merge 3 settings sections to single register_settings
--* Improve: Move routine to extract symbol to fetch to self method `get_symbol_to_fetch()`
--* Improve: Move stock data to DB to self method `data_to_db()`
+* Improve: Move routine to extract symbol to fetch to self method `get_symbol_to_fetch()`
+* Improve: Move stock data to DB to self method `data_to_db()`
 * Change: Make method `get_stock_from_db()` public so user can access Stock data in DB from custom functions
 * Change: Move method `sanitize_symbols()` to main class and make it public static so user can access it from custom functions
 * Add Alpha Vantage Tier option for better fetch timeout control
--* Switch to GLOBAL_QUOTE API mode and eliminate requirement to calculate change amount from TIME_SERIES_DAILY and TIME_SERIES_INTRADAY
--* Remove Intraday option from settings
-
+* Switch to GLOBAL_QUOTE API mode and eliminate requirement to calculate change amount from TIME_SERIES_DAILY and TIME_SERIES_INTRADAY
 * Fix: Allow dash character in symbols (eg. `STO:ERIC-B`)
 * (20180609) Readme: add How It Works
 * Readme: Update FAQ with `stuck quote` question

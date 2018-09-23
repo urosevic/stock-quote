@@ -60,7 +60,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				$wpau_stockquote->plugin_slug,
 				'wpau_stock_quote',
 				array(
-					'description' => __( 'Predefine general settings for Stock Ticker. Here you can set API key and symbols used on whole website (in all ticker).', 'wpaust' ),
+					'description' => __( 'Predefine general settings for Stock Quote. Here you can set API key and symbols used on whole website (in all quotes).', 'wpaust' ),
 				)
 			);
 
@@ -187,7 +187,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote_Settings' ) ) {
 				$wpau_stockquote->plugin_slug,
 				'wpau_stock_quote',
 				array(
-					'description' => __( 'Predefine default settings for Stock Ticker. Here you can set stock symbols and how you wish to present companies in ticker.', 'wpaust' ),
+					'description' => __( 'Predefine default settings for Stock Quote. Here you can set stock symbols and how you wish to present companies in page.', 'wpaust' ),
 				)
 			);
 

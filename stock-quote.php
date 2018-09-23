@@ -439,8 +439,13 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$result['status']  = 'success';
 			$result['message'] = $response['message'];
 			$result['symbol']  = $response['symbol'];
+			$result['done'] = false;
 
-			if ( strpos( $response['message'], 'no need to fetch' ) !== false ) {
+			if ( 'wait' == $response['method'] ) {
+				$result['status'] = 'wait';
+			} else if ( strpos( $response['message'], 'empty response' ) !== false ) {
+				$result['status'] = 'skip';
+			} else if ( strpos( $response['message'], 'no need to start new fetch' ) !== false ) {
 				$result['done'] = true;
 				$result['message'] = 'DONE';
 			} else {
@@ -714,65 +719,141 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 		/**
 		 * Download stock quotes from AlphaVantage.co and store them all to single transient
+		 * @return array Array of symbol data fetch status with message, symbol and method
 		 */
-		function get_alphavantage_quotes() {
+		public function get_alphavantage_quotes() {
 
-			// Check is currently fetch in progress
-			$progress = get_option( 'stockquote_av_progress', false );
+			// Get current timestamp (for reference)
+			$timestamp_now = time();
 
-			// Workaround for stuck fetching
-			$defaults = $this->defaults;
-			$current_timestamp = time();
-			$last_fetched_timestamp = get_option( 'stockquote_av_last_timestamp', $current_timestamp );
-			$skip_target_timestamp = $last_fetched_timestamp + (int) $defaults['cache_timeout'] + ( 2 * (int) $defaults['timeout'] );
-			$delta_timestamp = $current_timestamp - $skip_target_timestamp;
-			if ( false != $progress && $delta_timestamp < 1000 ) {
+			// Get API Tier and calculate timeout
+			$av_api_tier = ! empty( $this->defaults['av_api_tier'] ) ? $this->defaults['av_api_tier'] : 5;
+			$av_api_tier_timeout = 60 / $av_api_tier;
+
+			// Get API Tier end timestamp for previous fetch
+			$api_tier_end_timestamp = get_option( 'stockquote_av_tier_end_timestamp', $timestamp_now );
+			if ( $timestamp_now < $api_tier_end_timestamp ) {
+				self::log( 'API Tier timeout for previous symbol of ' . $av_api_tier_timeout . ' has not expired... waiting...' );
 				return array(
-					'method'  => 'skip',
+					'message' => "API Tier timeout for previous symbol has not expired. Waiting {$av_api_tier_timeout} second(s) ...",
+					'symbol'  => '',
+					'method'  => 'wait',
+				);
+			}
+
+			// Check is fetch in progress (even with expired API Tier timeout)
+			$progress = get_option( 'stockquote_av_progress', false );
+			if ( false != $progress ) {
+				return array(
 					'message' => 'Stock Quote already fetching data. Skip.',
 					'symbol'  => '',
+					'method'  => 'skip',
 				);
 			}
 
-			// Set fetch progress as active
-			self::lock_fetch();
+			// Get index and symbol to fetch
+			$to_fetch = self::get_symbol_to_fetch();
 
-			// Get defaults (for API key)
-			$defaults = $this->defaults;
-			// Get symbols we should to fetch from AlphaVantage
-			$symbols = $defaults['all_symbols'];
+			// Define method for symbol
+			$method = 'global_quote';
 
-			// If we don't have defined global symbols, exit
-			if ( empty( $symbols ) ) {
+			// If $to_fetch['index'] is 0 and cache timeout has not expired,
+			// do not attempt to fetch again but wait to expire timeout for next loop (UTC)
+			if ( 0 == $to_fetch['index'] ) {
+				$last_fetched_timestamp = get_option( 'stockquote_av_last_timestamp', $timestamp_now );
+				$target_timestamp = $last_fetched_timestamp + (int) $this->defaults['cache_timeout'];
+				if ( $target_timestamp > $timestamp_now ) {
+					// If timestamp not expired, do not fetch but exit
+					self::unlock_fetch();
+					return array(
+						'message' => 'Cache timeout has not expired, no need to start new fetch loop at the moment.',
+						'symbol'  => $to_fetch['symbol'],
+						'method'  => $method,
+					);
+				} else {
+					// If timestamp expired, set new value and proceed
+					update_option( 'stockquote_av_last_timestamp', $timestamp_now );
+					self::log( 'Set timestamp now when first symbol is fetched as a reference for next fetch loop' );
+				}
+			}
+
+			// Calculate API tier pause and save it to options and get data
+			$av_api_tier_end_timestamp = $timestamp_now + $av_api_tier_timeout;
+			update_option( 'stockquote_av_tier_end_timestamp', $av_api_tier_end_timestamp );
+
+			// Now call AlphaVantage fetcher for current symbol
+			$stock_data = $this->fetch_alphavantage_feed( $to_fetch['symbol'] );
+
+			// If we have not got array with stock data, exit w/o updating DB
+			if ( ! is_array( $stock_data ) ) {
+				self::log( $stock_data );
+
+				// If it's Invalid API call, report and skip it
+				if ( strpos( $stock_data, 'Invalid API call' ) >= 0 ) {
+					self::log( "Damn, we got Invalid API call for symbol {$to_fetch['symbol']}" );
+					update_option( 'stockquote_av_last', $to_fetch['symbol'] );
+				}
+
+				// If we got some error for first symbol, (and resnponse has not invalid API) revert last timestamp
+				if ( 0 == $to_fetch['index'] && false === strpos( $stock_data, 'Invalid API call' ) ) {
+					self::log( 'Failed fetching and crunching for first symbol, set back previous timestamp' );
+					update_option( 'stockquote_av_last_timestamp', $last_fetched_timestamp );
+				}
+				// Release processing for next run
+				self::unlock_fetch();
+				// Return response status
 				return array(
-					'message' => 'Stock Quote Fatal Error: There is no defined All Stock Symbols',
-					'symbol'  => '',
+					'message' => $stock_data,
+					'symbol'  => $to_fetch['symbol'],
+					'method'  => $method,
 				);
 			}
+
+			// Now write object of stock data to DB
+			$ret = self::data_to_db( $to_fetch, $stock_data );
+
+			// Is failed updated data in DB
+			if ( false === $ret ) {
+				$msg = "Stock Quote Fatal Error: Failed to save stock data for {$to_fetch['symbol']} to database!";
+				self::log( $msg );
+				// Release processing for next run
+				self::unlock_fetch();
+				// Return failed status
+				return array(
+					'message' => $msg,
+					'symbol'  => $to_fetch['symbol'],
+					'method'  => $method,
+				);
+			}
+
+			// After success update in database, report in log
+			$msg = "Stock data for symbol {$to_fetch['symbol']} has been updated in database.";
+			self::log( $msg );
+			// Set last fetched symbol
+			update_option( 'stockquote_av_last', $to_fetch['symbol'] );
+			// Release processing for next run
+			self::unlock_fetch();
+			// Return succes status
+			return array(
+				'message' => $msg,
+				'symbol'  => $to_fetch['symbol'],
+				'method'  => $method,
+			);
+		} // END function get_alphavantage_quotes()
+
+		/**
+		 * Define index (position) and symbol of one to fetch
+		 * @return array Arary with index of symbol and symbol to fetch
+		 */
+		public function get_symbol_to_fetch() {
+
+			// Get symbols we should to fetch from AlphaVantage
+			$symbols = $this->defaults['all_symbols'];
 
 			// Make array of global symbols
 			$symbols_arr = explode( ',', $symbols );
 
-			// Remove unsupported stock exchanges from global array to prevent API errors
-			$symbols_supported = array();
-			foreach ( $symbols_arr as $symbol_pos => $symbol_to_check ) {
-				// If there is semicolon, it's symbol with exchange
-				if ( strpos( $symbol_to_check, ':' ) ) {
-					// Explode symbol so we can get exchange code
-					$symbol_exchange = explode( ':', $symbol_to_check );
-					// If exchange code is supported, add symbol to query array
-					if ( ! empty( self::$exchanges[ strtoupper( trim( $symbol_exchange[0] ) ) ] ) ) {
-						$symbols_supported[] = $symbol_to_check;
-					}
-				} else {
-					// Add symbol w/o exchange to query array
-					$symbols_supported[] = $symbol_to_check;
-				}
-			}
-			// Set back query array to $symbols_arr
-			$symbols_arr = $symbols_supported;
-
-			// Default symbol to fetch first (first form array)
+			// Default symbol to fetch first (first from array)
 			$current_symbol_index = 0;
 			$symbol_to_fetch = $symbols_arr[ $current_symbol_index ];
 
@@ -790,53 +871,21 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					$symbol_to_fetch = strtoupper( $symbols_arr[ $current_symbol_index ] );
 				}
 			}
+			// Return array
+			return array(
+				'index'  => $current_symbol_index,
+				'symbol' => $symbol_to_fetch,
+			);
 
-			// If current_symbol_index is 0 and cache timeout has not expired,
-			// do not attempt to fetch again but wait to expire timeout for next loop (UTC)
-			if ( 0 == $current_symbol_index ) {
-				$current_timestamp = time();
-				$last_fetched_timestamp = get_option( 'stockquote_av_last_timestamp', $current_timestamp );
-				$target_timestamp = $last_fetched_timestamp + (int) $defaults['cache_timeout'];
-				if ( $target_timestamp > $current_timestamp ) {
-					// If timestamp not expired, do not fetch but exit
-					self::unlock_fetch();
-					return array(
-						'message' => 'Cache timeout has not expired, no need to fetch new loop at the moment.',
-						'symbol'  => $symbol_to_fetch,
-					);
-				} else {
-					// If timestamp expired, set new value and proceed
-					update_option( 'stockquote_av_last_timestamp', $current_timestamp );
-					self::log( 'Set current timestamp when first symbol is fetched as a reference for next loop' );
-				}
-			}
+		} // END public function get_symbol_to_fetch()
 
-			// Now call AlphaVantage fetcher for current symbol
-			$stock_data = $this->fetch_alphavantage_feed( $symbol_to_fetch );
-
-			// If we have not got array with stock data, exit w/o updating DB
-			if ( ! is_array( $stock_data ) ) {
-				self::log( $stock_data );
-
-				// If it's Invalid API call, report and skip it
-				if ( strpos( $stock_data, 'Invalid API call' ) >= 0 ) {
-					self::log( 'Damn, we got Invalid API call for symbol ' . $symbol_to_fetch );
-					update_option( 'stockquote_av_last', $symbol_to_fetch );
-				}
-
-				// If we got some error for first symbol, (and resnponse has not invalid API) revert last timestamp
-				if ( 0 == $current_symbol_index && false === strpos( $stock_data, 'Invalid API call' ) ) {
-					self::log( 'Failed fetching and crunching for first symbol, set back previous timestamp' );
-					update_option( 'stockquote_av_last_timestamp', $last_fetched_timestamp );
-				}
-				// Release processing for next run
-				self::unlock_fetch();
-				// Return response status
-				return array(
-					'message' => $stock_data,
-					'symbol'  => $symbol_to_fetch,
-				);
-			}
+		/**
+		 * Save data retrieved from AV API to DB
+		 * @param  array $to_fetch    Array of index of symbol and symbol to fetch
+		 * @param  array $stock_data  Array of stock data
+		 * @return array              Result of MySQL query
+		 */
+		private function data_to_db( $to_fetch, $stock_data ) {
 
 			// With success stock data in array, save data to database
 			global $wpdb;
@@ -850,7 +899,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					FROM {$wpdb->prefix}stock_quote_data
 					WHERE symbol = %s
 				",
-				$symbol_to_fetch
+				$to_fetch['symbol']
 			) );
 			if ( ! empty( $symbol_exists ) ) {
 				// UPDATE
@@ -933,34 +982,8 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					)
 				);
 			}
-
-			// Is failed updated data in DB
-			if ( false === $ret ) {
-				$msg = "Stock Ticker Fatal Error: Failed to save stock data for {$symbol_to_fetch} to database!";
-				self::log( $msg );
-				// Release processing for next run
-				self::unlock_fetch();
-				// Return failed status
-				return array(
-					'message' => $msg,
-					'symbol'  => $symbol_to_fetch,
-				);
-			}
-
-			// After success update in database, report in log
-			$msg = "Stock data for symbol {$symbol_to_fetch} has been updated in database.";
-			self::log( $msg );
-			// Set last fetched symbol
-			update_option( 'stockquote_av_last', $symbol_to_fetch );
-			// Release processing for next run
-			self::unlock_fetch();
-			// Return succes status
-			return array(
-				'message' => $msg,
-				'symbol'  => $symbol_to_fetch,
-			);
-
-		} // END function get_alphavantage_quotes( $symbols )
+			return $ret;
+		} // END private function data_to_db( $to_fetch, $stock_data )
 
 		function fetch_alphavantage_feed( $symbol ) {
 
@@ -975,15 +998,14 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			}
 
 			// Define AplhaVantage API URL
-			// $feed_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=5min&apikey=' . $defaults['avapikey'] . '&symbol=';
-			$feed_url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&outputsize=compact&apikey=' . $defaults['avapikey'] . '&symbol=';
-			$feed_url .= $symbol;
+			self::log( "Using GLOBAL_QUOTE for {$symbol}..." );
+			$feed_url = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&apikey=' . $defaults['avapikey'] . '&datatype=json&symbol=' . $symbol;
 
 			$wparg = array(
 				'timeout' => intval( $defaults['timeout'] ),
 			);
 
-			// self::log( 'Fetching data from AV: ' . $feed_url );
+			self::log( 'Fetching data from AV: ' . $feed_url );
 			$response = wp_remote_get( $feed_url, $wparg );
 
 			// Initialize empty $json variable
@@ -999,128 +1021,35 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				// If we got some error from AV, log to self::log and return none
 				if ( ! empty( $response_arr['Error Message'] ) ) {
 					return 'Stock Quote connected to AlphaVantage.co but got error: ' . $response_arr['Error Message'];
+				} else if ( ! empty( $response_arr['Information'] ) ) {
+					return 'Stock Quote connected to AlphaVantage.co and got response: ' . $response_arr['Information'];
+				} else if ( isset( $response_arr['Global Quote'] ) && empty( $response_arr['Global Quote'] ) ) {
+					return 'Stock Quote connected to AlphaVantage.co and got empty response for symbol ' . $symbol . '. It is possible that symbol does not exists or AlphaVantage.co does not have data for it!';
 				} else {
 					// Crunch data from AlphaVantage for symbol and prepare compact array
 					self::log( "We got data from AlphaVantage for $symbol, so now let we crunch them and save to database..." );
 
-					// Get basics
-					// $ticker_symbol      = $response_arr['Meta Data']['2. Symbol']; // We don't use this at the moment, but requested symbol
-					$last_trade_refresh = $response_arr['Meta Data']['3. Last Refreshed'];
-					$last_trade_tz      = $response_arr['Meta Data']['5. Time Zone']; // TIME_SERIES_DAILY
-					// $last_trade_tz      = $response_arr['Meta Data']['6. Time Zone']; // TIME_SERIES_INTRADAY
-
-					// Get prices
-					$i = 0;
-
-					// foreach ( $response_arr['Time Series (5min)'] as $key => $val ) { // TIME_SERIES_INTRADAY
-					foreach ( $response_arr['Time Series (Daily)'] as $key => $val ) { // TIME_SERIES_DAILY
-						switch ( $i ) {
-							case 0:
-								$last_trade_date = $key;
-								$last_trade = $val;
-								break;
-							case 1:
-								$prev_trade_date = $key;
-								$prev_trade = $val;
-								break;
-							case 2: // Workaround for inconsistent data
-								$prev_trade_2_date = $key;
-								$prev_trade_2 = $val;
-								break;
-							case 3: // Workaround for weekend data (currencies)
-								$prev_trade_3_date = $key;
-								$prev_trade_3 = $val;
-								break;
-							default:
-								continue;
-						}
-						++$i;
+					// GLOBAL_QUOTE
+					if ( isset( $response_arr['Global Quote'] ) ) {
+						$quote = $response_arr['Global Quote'];
+						$data_arr = array(
+							't'   => $symbol,
+							'pc'  => $quote['08. previous close'],
+							'c'   => $quote['09. change'],
+							'cp'  => str_replace( '%', '', $quote['10. change percent'] ),
+							'l'   => $quote['05. price'], // $last_close,
+							'lt'  => $quote['07. latest trading day'], // $last_trade_refresh,
+							'ltz' => 'US/Eastern', // default US/Eastern
+							'r'   => "{$quote['04. low']} - {$quote['03. high']}", // $range,
+							'o'   => $quote['02. open'], // $last_open,
+							'h'   => $quote['03. high'], // $last_high,
+							'low' => $quote['04. low'], // $last_low,
+							'v'   => $quote['06. volume'], // $last_volume,
+						);
 					}
 
-					$last_open   = $last_trade['1. open'];
-					$last_high   = $last_trade['2. high'];
-					$last_low    = $last_trade['3. low'];
-					$last_close  = $last_trade['4. close'];
-					$last_volume = (int) $last_trade['5. volume'];
-
-					$prev_open   = $prev_trade['1. open'];
-					$prev_high   = $prev_trade['2. high'];
-					$prev_low    = $prev_trade['3. low'];
-					$prev_close  = $prev_trade['4. close'];
-					$prev_volume = (int) $prev_trade['5. volume'];
-
-					// Try fallback for previous data if AV return zero for second day
-					if ( '0.0000' == $prev_open ) {
-						$prev_open   = $prev_trade_2['1. open'];
-						// 3rd day (weekend)
-						if ( '0.0000' == $prev_open ) {
-							$prev_open   = $prev_trade_3['1. open'];
-						}
-					}
-					if ( '0.0000' == $prev_high ) {
-						$prev_high   = $prev_trade_2['2. high'];
-						// 3rd day (weekend)
-						if ( '0.0000' == $prev_high ) {
-							$prev_high   = $prev_trade_3['2. high'];
-						}
-					}
-					if ( '0.0000' == $prev_low ) {
-						$prev_low    = $prev_trade_2['3. low'];
-						// 3rd day (weekend)
-						if ( '0.0000' == $prev_low ) {
-							$prev_low    = $prev_trade_3['3. low'];
-						}
-					}
-					if ( '0.0000' == $prev_close ) {
-						$prev_close  = $prev_trade_2['4. close'];
-						// 3rd day (weekend)
-						if ( '0.0000' == $prev_close ) {
-							$prev_close  = $prev_trade_3['4. close'];
-						}
-					}
-
-					// Volume (1st day)
-					if ( 0 == $last_volume ) {
-						// 2nd day
-						$last_volume = (int) $prev_trade['5. volume'];
-						// 3rd day
-						if ( 0 == $last_volume ) {
-							$last_volume = (int) $prev_trade_2['5. volume'];
-							// 4th day
-							if ( 0 == $last_volume ) {
-								$last_volume = (int) $prev_trade_3['5. volume'];
-							}
-						}
-					}
-
-					// The difference between 2017-09-01's close price and 2017-08-31's close price gives you the "Change" value.
-					$change = $last_close - $prev_close;
-					// So the gain on Friday was 25.92 (5025.92 - 5000) or 0.52% (25.92/5000 x 100%). No mystery!
-					$change_p = ( $change / $prev_close ) * 100;
-					// if we got INF, fake changep to 0
-					if ( 'INF' == $change_p ) {
-						$change_p = 0;
-					}
-
-					// The high and low prices combined give you the "Range" information
-					$range = "$last_low - $last_high";
-
-					// unset( $json );
-					$data_arr = array(
-						't'   => $symbol, // $ticker_symbol,
-						'c'   => $change,
-						'cp'  => $change_p,
-						'l'   => $last_close,
-						'lt'  => $last_trade_refresh,
-						'ltz' => $last_trade_tz,
-						'r'   => $range,
-						'o'   => $last_open,
-						'h'   => $last_high,
-						'low' => $last_low,
-						'v'   => $last_volume,
-					);
+					self::log( 'data_arr w/o raw JSON: ' . print_r( $data_arr, 1 ) );
 					$data_arr['raw'] = $json;
-
 				}
 				unset( $response_arr );
 			}
