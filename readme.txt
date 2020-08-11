@@ -1,11 +1,11 @@
 === Stock Quote ===
 Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
-Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
-Requires at least: 4.4.0
-Tested up to: 5.4.1
-Stable tag: 0.2.1.1
-Requires PHP: 5.5
+Tags: stock, stock quote, trading, finance, exchange
+Requires at least: 4.6
+Tested up to: 5.5
+Stable tag: 0.2.2
+Requires PHP: 5.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,6 +20,8 @@ Please note, stock data has been provided by [Alpha Vantage](https://www.alphava
 Stock Quote is simplified, static inline variation of [Stock Ticker](https://wordpress.org/plugins/stock-ticker/) plugin.
 
 **Multisite WordPress is not supported yet**
+
+**IMPORTANT** Stock Quote does not have own Gutenberg Block, so you can add `[stock_quote]` shortcode inline to Paragraph Block or Common Block to insert Stock Quote within the post/page content.
 
 == Disclaimer ==
 
@@ -64,7 +66,7 @@ You can tune single shortcode with parameters:
 * `show` - can be `name` to represent company with Company Name (default), or `symbol` to represent company with Stock Symbol. You must add preferred symbol to `Custom Names` textarea on Settings page because Google Finance does not provide nice company names in feeds
 * `decimals` - override default number of decimal places for values (default from settings page used if no custom set by shortcode). Valud values are: `1`, `2`, `3` and `4`
 * `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
-* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%`, `%volume%`, `%raw_price%`, `%raw_change%`, `%raw_changep%`, `%raw_volume%`
+* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%company_name%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%`, `%volume%`, `%raw_price%`, `%raw_change%`, `%raw_changep%`, `%raw_volume%`
 * `raw` - enable printing quote content without wrapping to SPAN with classes. Default is disabled. Can be `1` or `true` for enabled, OR `0` or `false` for disabled.
 * `class` - (optional) custom class name for quote item, if you wish some special styling
 
@@ -80,7 +82,6 @@ or
 
 Alpha Vantage provide stock data for following stock exchange markets:
 
-* **ASX** - Australian Securities Exchange
 * **BOM** - Bombay Stock Exchange
 * **BIT** - Borsa Italiana Milan Stock Exchange
 * **TSE** - Canadian/Toronto Securities Exchange
@@ -96,16 +97,17 @@ Alpha Vantage provide stock data for following stock exchange markets:
 * **HEL** - NASDAQ OMX Helsinki
 * **ICE** - NASDAQ OMX Iceland
 * **STO** - NASDAQ OMX Stockholm
-* **NSE** - National Stock Exchange of India
 * **NYSE** - New York Stock Exchange
-* **SGX** - Singapore Exchange
 * **SHA** - Shanghai Stock Exchange
 * **SHE** - Shenzhen Stock Exchange
 * **TPE** - Taiwan Stock Exchange
 * **TYO** - Tokyo Stock Exchange
 
 Not supported:
-* **MCX** - Moscow Exchange
+* **MCX** - Moscow Exchange (since December 2018) - eg. `MCX:GAZP`
+* **ASX** - Australian Securities Exchange ([since since May 2020](https://twitter.com/moinzaman/status/1262522914227712000)) - eg. `ASX:MSB`
+* **SGX** - Singapore Exchange ([since July 13th 2020](https://kpo-and-czm.blogspot.com/2017/11/bye-yahoo-finance-hi-alpha-vantage.html?showComment=1596075191464#c3946519402226422619)) - eg. `C29.SI`
+* **NSE** - National Stock Exchange of India ([since July 2020](https://twitter.com/sachinmankapure/status/1279794312210010114)) - eg. `NSE:VB`
 
 == Installation ==
 
@@ -140,7 +142,7 @@ To get quote for this exchange, simply add symbol `.DJI` or `^DJI`.
 
 = How to get currency exchange rate? =
 
-Use Currency symbols like `EURGBP=X` to get rate of `1 Euro` = `? British Pounds`
+Use Currency symbols like `EURGBP` to get rate of `1 Euro` = `? British Pounds`
 
 = How to get descriptive title for currency exchange rates =
 
@@ -150,7 +152,7 @@ Add to `Custom Names` legend currency exchange symbol w/o `=X` part, like:
 
 = How to get proper stock price from proper stock exchange? =
 
-Enter symbol in format `EXCHANGE:SYMBOL` like `LON:FFX`
+Enter symbol in format `EXCHANGE:SYMBOL` like `LON:AVST`
 
 = How to add Stock Ticker to header theme file? =
 
@@ -188,6 +190,16 @@ This is initial version of plugin.
 == Changelog ==
 
 = DEV =
+
+= 0.2.2 (20200811) =
+* Tested: WordPress 5.5-RC2-48768 and PHP 7.4.1
+* Add: New template keyword %company_name% which show descriptive company name even if `show` is set as `symbol`, if definition exists in custom legend.
+* Improve: Made all strings in plugin available for localization.
+* Improve: Retrieve single row of data from DB as Stock Quote has single symbol per shortcode or widget.
+* Improve: Help section on plugin settings page.
+* Simplify: Remove unused variables and improve conditionals for better DRY.
+* Change: FOREX symbol now should be used as `EURGBP` instead of old `EURGBP=X`
+* Change: Remove ASX, SGX and NSE from supported exchanges because AlphaVantage does not provide data for Australian Securities Exchange, Singapore Exchange and National Stock Exchange of India
 
 = 0.2.1.1 (20200520) =
 * Remove MCX from supported exchanges because AlphaVantage does not provide data for Moscow Stock Exchange

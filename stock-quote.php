@@ -1,14 +1,15 @@
 <?php
 /**
-Plugin Name: Stock Quote
-Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
-Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.1.1
-Author: Aleksandar Urosevic
-Author URI: https://urosevic.net
-License: GNU GPL3
-Textdomain: stock-quote
  * @package  Stock Quote
+ * Plugin Name: Stock Quote
+ * Plugin URI:  https://urosevic.net/wordpress/plugins/stock-quote/
+ * Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
+ * Version:     0.2.2
+ * Author:      Aleksandar Urosevic
+ * Author URI:  https://urosevic.net
+ * License:     GNU GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.txt
+ * Text Domain: stock-quote
  */
 
 /**
@@ -52,39 +53,43 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 2;
-		const VER = '0.2.1.1';
+		const VER = '0.2.2';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
 		public $plugin_option = 'stockquote_defaults';
 		public $plugin_url;
 
-		public static $exchanges = array(
-			'ASX'    => 'Australian Securities Exchange',
-			'BOM'    => 'Bombay Stock Exchange',
-			'BIT'    => 'Borsa Italiana Milan Stock Exchange',
-			'TSE'    => 'Canadian/Toronto Securities Exchange',
-			'FRA'    => 'Deutsche Boerse Frankfurt Stock Exchange',
-			'ETR'    => 'Deutsche Boerse Frankfurt Stock Exchange',
-			'AMS'    => 'Euronext Amsterdam',
-			'EBR'    => 'Euronext Brussels',
-			'ELI'    => 'Euronext Lisbon',
-			'EPA'    => 'Euronext Paris',
-			'LON'    => 'London Stock Exchange',
-			// 'MCX'    => 'Moscow Exchange',
-			'NASDAQ' => 'NASDAQ Exchange',
-			'CPH'    => 'NASDAQ OMX Copenhagen',
-			'HEL'    => 'NASDAQ OMX Helsinki',
-			'ICE'    => 'NASDAQ OMX Iceland',
-			'STO'    => 'NASDAQ OMX Stockholm',
-			'NSE'    => 'National Stock Exchange of India',
-			'NYSE'   => 'New York Stock Exchange',
-			'SGX'    => 'Singapore Exchange',
-			'SHA'    => 'Shanghai Stock Exchange',
-			'SHE'    => 'Shenzhen Stock Exchange',
-			'TPE'    => 'Taiwan Stock Exchange',
-			'TYO'    => 'Tokyo Stock Exchange',
-		);
+		public static $exchanges = [
+			'supported' => [
+				'BOM'    => 'Bombay Stock Exchange',
+				'BIT'    => 'Borsa Italiana Milan Stock Exchange',
+				'TSE'    => 'Canadian/Toronto Securities Exchange',
+				'FRA'    => 'Deutsche Boerse Frankfurt Stock Exchange',
+				'ETR'    => 'Deutsche Boerse Frankfurt Stock Exchange',
+				'AMS'    => 'Euronext Amsterdam',
+				'EBR'    => 'Euronext Brussels',
+				'ELI'    => 'Euronext Lisbon',
+				'EPA'    => 'Euronext Paris',
+				'LON'    => 'London Stock Exchange',
+				'NASDAQ' => 'NASDAQ Exchange',
+				'CPH'    => 'NASDAQ OMX Copenhagen',
+				'HEL'    => 'NASDAQ OMX Helsinki',
+				'ICE'    => 'NASDAQ OMX Iceland',
+				'STO'    => 'NASDAQ OMX Stockholm',
+				'NYSE'   => 'New York Stock Exchange',
+				'SHA'    => 'Shanghai Stock Exchange',
+				'SHE'    => 'Shenzhen Stock Exchange',
+				'TPE'    => 'Taiwan Stock Exchange',
+				'TYO'    => 'Tokyo Stock Exchange',
+			],
+			'unsupported' => [
+				'ASX'    => 'Australian Securities Exchange',
+				'MCX'    => 'Moscow Exchange',
+				'NSE'    => 'National Stock Exchange of India',
+				'SGX'    => 'Singapore Exchange',
+			],
+		];
 
 		/**
 		 * Construct the plugin object
@@ -93,7 +98,8 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 			$this->plugin_url = plugin_dir_url( __FILE__ );
 			$this->plugin_file = plugin_basename( __FILE__ );
-			load_plugin_textdomain( $this->plugin_slug, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
+			add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 
 			// Installation and uninstallation hooks.
 			register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -145,12 +151,20 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 		} // END public function __construct()
 
 		/**
+		 * Load Plugin Text Domain
+		 * @return [type] [description]
+		 */
+		public function load_plugin_textdomain() {
+			load_plugin_textdomain( $this->plugin_slug, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+		}
+
+		/**
 		 * Throw notice that plugin does not work on Multisite
 		 */
 		function multisite_notice() {
 			$class = 'notice notice-error';
 			$message = sprintf(
-				__( 'We are sorry, %1$s v%2$s does not support Multisite WordPress.', 'wpausq' ),
+				__( 'We are sorry, %1$s v%2$s does not support Multisite WordPress.', 'stock-quote' ),
 				$this->plugin_name,
 				self::VER
 			);
@@ -196,7 +210,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			if ( is_multisite() ) {
 				deactivate_plugins( plugin_basename( __FILE__ ) );
 				wp_die( sprintf(
-					__( 'We are sorry, %1$s v%2$s does not support Multisite WordPress.', 'wpausq' ),
+					__( 'We are sorry, %1$s v%2$s does not support Multisite WordPress.', 'stock-quote' ),
 					$this->plugin_name,
 					self::VER
 				) );
@@ -327,7 +341,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 					$this->plugin_slug . '-admin',
 					plugins_url( 'assets/css/admin.css', __FILE__ ),
 					array(),
-					self::VER
+					self::VER . time()
 				);
 				wp_register_script(
 					$this->plugin_slug . '-admin',
@@ -488,34 +502,30 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				return;
 			}
 
-			// Get defaults.
-			$defaults = $this->defaults;
-
 			// Append this symbol to all_symbils if missing
 			self::add_to_all_symbols( $symbol );
 
 			// Prepare quote.
 			$class = "stock_quote sqitem $class";
 
-			// Get stock data from database
+			// Get stock data from database.
 			$stock_data = self::get_stock_from_db( $symbol );
-			if ( empty( $stock_data ) || empty( $stock_data[ $symbol ] ) ) {
-				// return "{$out_start}{$out_error_msg}{$out_end}";
+			if ( empty( $stock_data ) || empty( $stock_data['symbol'] ) || $symbol !== $stock_data['symbol'] ) {
 				// No results were returned.
 				return sprintf(
 					'<span class="%1$s error">%2$s</span>',
 					$class, // 1
-					str_replace( '%symbol%', $symbol, $defaults['error_message'] ) // 2
+					str_replace( '%symbol%', $symbol, $this->defaults['error_message'] ) // 2
 				);
 			}
 
 			// Prepare number format
 			if ( ! empty( $number_format ) && in_array( $number_format, array( 'dc', 'sd', 'sc', 'cd' ) ) ) {
-				$defaults['number_format'] = $number_format;
-			} else if ( ! isset( $defaults['number_format'] ) ) {
-				$defaults['number_format'] = 'cd';
+				$this->defaults['number_format'] = $number_format;
+			} else if ( ! isset( $this->defaults['number_format'] ) ) {
+				$this->defaults['number_format'] = 'cd';
 			}
-			switch ( $defaults['number_format'] ) {
+			switch ( $this->defaults['number_format'] ) {
 				case 'dc': // 0.000,00
 					$thousands_sep = '.';
 					$dec_point     = ',';
@@ -539,39 +549,39 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				$decimals = (int) $decimals;
 			} else {
 				// From settings
-				if ( ! isset( $defaults['decimals'] ) ) {
-					$defaults['decimals'] = 2;
+				if ( ! isset( $this->defaults['decimals'] ) ) {
+					$this->defaults['decimals'] = 2;
 				}
-				$decimals = (int) $defaults['decimals'];
+				$decimals = (int) $this->defaults['decimals'];
 			}
-
-			// Get legend for company names.
-			$matrix = explode( "\n", $defaults['legend'] );
-			$msize = count( $matrix );
-			for ( $m = 0; $m < $msize; ++$m ) {
-				$line = explode( ';', $matrix[ $m ] );
-				$legend[ strtoupper( trim( $line[0] ) ) ] = trim( $line[1] );
-			}
-			unset( $m, $msize, $matrix, $line );
-
-			// Start quote string.
-			$q = '';
 
 			// Assign object elements to vars.
-			$q_symbol  = $symbol;
-			$q_name    = $stock_data[ $symbol ]['symbol']; // ['t']; // No nicename on AlphaVantage.co so use ticker instead.
-			$q_change  = $raw_change = $stock_data[ $symbol ]['change']; // ['c'];
-			$q_price   = $raw_price = $stock_data[ $symbol ]['last_close']; // ['l']; // it's last_close instead of last_open
-			$q_changep = $raw_changep = $stock_data[ $symbol ]['changep']; // ['cp'];
-			$q_volume  = $raw_volume = $stock_data[ $symbol ]['last_volume'];
-			$q_tz      = $stock_data[ $symbol ]['tz'];
-			$q_ltrade  = $stock_data[ $symbol ]['last_refreshed']; // ['lt'];
-			$q_ltrade  = str_replace( ' 00:00:00', '', $q_ltrade ); // Strip zero time from last trade date string
-			$q_ltrade  = "{$q_ltrade} {$q_tz}";
+			$q_symbol    = $symbol;
+			// No nicename on AlphaVantage.co so use ticker instead.
+			$q_name      = $stock_data['symbol'];
+			$q_change    = $stock_data['change'];
+			// It's last_close instead of last_open
+			$q_price     = $stock_data['last_close'];
+			$q_changep   = $stock_data['changep'];
+			$q_volume    = $stock_data['last_volume'];
+			$q_tz        = $stock_data['tz'];
+			$q_ltrade    = $stock_data['last_refreshed'];
+			// Preserve RAW values.
+			$raw_change  = $q_change;
+			$raw_price   = $q_price;
+			$raw_changep = $q_changep;
+			$raw_volume  = $q_volume;
+			// Strip zero time from last trade date string.
+			$q_ltrade    = str_replace( ' 00:00:00', '', $q_ltrade );
+			$q_ltrade    = "{$q_ltrade} {$q_tz}";
 			// Extract Exchange from Symbol
-			$q_exch = '';
+			$q_exch      = '';
+			$q_exch_symbol = $q_symbol;
 			if ( strpos( $symbol, ':' ) !== false ) {
 				list( $q_exch, $q_symbol ) = explode( ':', $symbol );
+				if ( ! empty( $q_exch ) ) {
+					$q_exch_symbol = "{$q_exch}:{$q_symbol}";
+				}
 			}
 
 			// Define class based on change.
@@ -587,42 +597,48 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			}
 			$class = "$class $chclass";
 
-			// Get custom company name if exists.
-			if ( ! empty( $legend[ $q_exch . ':' . $q_symbol ] ) ) {
-				// First in format EXCHANGE:SYMBOL.
-				$q_name = $legend[ $q_exch . ':' . $q_symbol ];
-			} else if ( ! empty( $legend[ $q_symbol ] ) ) {
-				// Then in format SYMBOL.
-				$q_name = $legend[ $q_symbol ];
-			}
-
-			// What to show: Symbol or Company Name?
-			if ( 'name' == $show ) {
-				$company_show = $q_name;
-			} else {
-				$company_show = $q_symbol;
-			}
-
 			// Format numbers.
 			$q_price   = number_format( $q_price, $decimals, $dec_point, $thousands_sep );
 			$q_change  = $prefix . number_format( $q_change, $decimals, $dec_point, $thousands_sep );
 			$q_changep = $prefix . number_format( $q_changep, $decimals, $dec_point, $thousands_sep );
 
-			$url_query = $q_symbol;
+			// Decide what stock quote template is.
+			$template = ! empty( $template ) ? $template : '%company% %price% %change% %changep%';
+			$company_show = $q_symbol;
+			$company_name = $q_symbol;
+
+			// Get descriptiove q_name from legend, but only if we really need it.
+			if ( 'name' == $show || strpos( $template, '%company_name%' ) || strpos( $template, '%company%' ) ) {
+				// Get custom defined legend with custom stock names.
+				$legend = self::legend();
+				// Get custom company name if exists.
+				if ( ! empty( $legend[ $q_exch . ':' . $q_symbol ] ) ) {
+					// First in format EXCHANGE:SYMBOL.
+					$q_name = $legend[ $q_exch . ':' . $q_symbol ];
+				} else if ( ! empty( $legend[ $q_symbol ] ) ) {
+					// Then in format SYMBOL.
+					$q_name = $legend[ $q_symbol ];
+				}
+				$company_name = $q_name;
+				// What to show: Symbol (default) or Company Name?
+				if ( 'name' == $show ) {
+					$company_show = $q_name;
+				}
+			}
+
 			if ( ! empty( $q_exch ) ) {
-				$quote_title = $q_name . ' (' . self::$exchanges[ $q_exch ] . ', Volume ' . $q_volume . ', Last trade ' . $q_ltrade . ')';
+				$quote_title = $q_name . ' (' . self::$exchanges['supported'][ $q_exch ] . ', Volume ' . $q_volume . ', Last trade ' . $q_ltrade . ')';
 			} else {
 				$quote_title = $q_name . ' (Last trade ' . $q_ltrade . ')';
 			}
-
-			$template = ! empty( $template ) ? $template : '%company% %price% %change% %changep%';
 
 			// Value template.
 			$quote_text = $template;
 			// Formatted values
 			$quote_text = str_replace( '%company%', $company_show, $quote_text );
+			$quote_text = str_replace( '%company_name%', $company_name, $quote_text );
 			$quote_text = str_replace( '%symbol%', $q_symbol, $quote_text );
-			$quote_text = str_replace( '%exch_symbol%', $url_query, $quote_text );
+			$quote_text = str_replace( '%exch_symbol%', $q_exch_symbol, $quote_text );
 			$quote_text = str_replace( '%price%', $q_price, $quote_text );
 			$quote_text = str_replace( '%change%', $q_change, $quote_text );
 			$quote_text = str_replace( '%changep%', "{$q_changep}%", $quote_text );
@@ -644,7 +660,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				);
 			}
 
-			unset( $q, $defaults, $legend );
+			unset( $legend );
 
 			// Print quote content.
 			return $out;
@@ -678,48 +694,37 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 
 		} // END public function shortcode()
 
-		// Thanks to https://coderwall.com/p/zepnaw/sanitizing-queries-with-in-clauses-with-wpdb-on-wordpress
-		public function get_stock_from_db( $symbols = '' ) {
-			// If no symbols we have to fetch from DB, then exit
-			if ( empty( $symbols ) ) {
+		/**
+		 * Retrieve stock data from database
+		 * @param  string $symbol Stock symbol to retrieve data for
+		 * @return array          Associated array of stock data results retrieved from database
+		 */
+		public function get_stock_from_db( $symbol = '' ) {
+			// If no symbol we have to fetch from DB, then exit
+			if ( empty( $symbol ) ) {
 				return;
 			}
 
 			global $wpdb;
-			// Explode symbols to array
-			$symbols_arr = explode( ',', $symbols );
-			// Count how many entries will we select?
-			$how_many = count( $symbols_arr );
-			// prepare the right amount of placeholders for each symbol
-			$placeholders = array_fill( 0, $how_many, '%s' );
-			// glue together all the placeholders...
-			$format = implode( ',', $placeholders );
-			// put all in the query and prepare
 
-			// retrieve the results from database
-			$stock_data_a = $wpdb->get_results( $wpdb->prepare(
+			// Retrieve the result from database for single symbol
+			$stock_data = $wpdb->get_row( $wpdb->prepare(
 				"
 				SELECT `symbol`,`tz`,`last_refreshed`,`last_open`,`last_high`,`last_low`,`last_close`,`last_volume`,`change`,`changep`,`range`
 				FROM {$wpdb->prefix}stock_quote_data
-				WHERE symbol IN ($format)
+				WHERE symbol = %s
 				",
-				$symbols_arr
+				$symbol
 			), ARRAY_A );
 
 			// If we don't have anything retrieved, just exit
-			if ( empty( $stock_data_a ) ) {
+			if ( empty( $stock_data ) ) {
 				return;
 			}
 
-			// Convert DB result to associated array
-			$stock_data = array();
-			foreach ( $stock_data_a as $stock_data_item ) {
-				$stock_data[ $stock_data_item['symbol'] ] = $stock_data_item;
-			}
-
-			// Return re-composed assiciated array
+			// Return stock data.
 			return $stock_data;
-		} // END private function get_stock_from_db( $symbols ) {
+		} // END private function get_stock_from_db( $symbol ) {
 
 		/**
 		 * Download stock quotes from AlphaVantage.co and store them all to single transient
@@ -1102,6 +1107,25 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 				}
 			}
 		} // END public function add_to_all_symbols( $symbol )
+
+		/**
+		 * Convert Legend to associated array.
+		 * @return array Associated array of the custom names for symbols.
+		 */
+		public function legend() {
+			if ( empty( $this->defaults['legend'] ) ) {
+				return [];
+			}
+			// Get legend for company names.
+			$matrix = explode( "\n", $this->defaults['legend'] );
+			$msize = count( $matrix );
+			for ( $m = 0; $m < $msize; ++$m ) {
+				$line = explode( ';', $matrix[ $m ] );
+				$legend[ strtoupper( trim( $line[0] ) ) ] = trim( $line[1] );
+			}
+			unset( $m, $msize, $matrix, $line );
+			return $legend;
+		} // END public function legend()
 
 		public static function log( $str ) {
 			// Only if WP_DEBUG is enabled

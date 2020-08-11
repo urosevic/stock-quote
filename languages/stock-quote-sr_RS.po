@@ -1,119 +1,248 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Stock Quote\n"
-"POT-Creation-Date: 2017-01-18 23:58+0100\n"
-"PO-Revision-Date: 2017-01-19 00:00+0100\n"
+"POT-Creation-Date: 2020-08-11 15:43+0200\n"
+"PO-Revision-Date: 2020-08-11 15:43+0200\n"
 "Last-Translator: Aleksandar Urošević <urke.kg@gmail.com>\n"
 "Language-Team: Aleksandar Urošević <urke.kg@gmail.com>\n"
 "Language: sr_RS\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: stock-quote.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
 "esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: inc/settings.php:48
-msgid "Default Settings"
-msgstr "Основна подешавања"
+#: inc/settings.php:49 stock-quote.php:191 stock-quote.php:327
+msgid "Settings"
+msgstr "Подешавања"
 
-#: inc/settings.php:56
-msgid "Stock Symbols"
-msgstr "Симболи"
+#: inc/settings.php:58
+msgid "General"
+msgstr "Опште"
 
-#: inc/settings.php:62
-msgid "Enter default stock symbol"
-msgstr "Унесите подразумевани симбол"
+#: inc/settings.php:63
+msgid ""
+"Predefine general settings for Stock Quote. Here you can set API key and "
+"symbols used on whole website (in all quotes)."
+msgstr ""
+"Унапред дефинисана општа подешавања Stock Quote. Овде поставите АПИ кључ и "
+"симболе који ће бити коришћени на читавом веб месту (у свим акцијама)"
 
-#: inc/settings.php:69
-msgid "Show Company as"
-msgstr "Прикажи компанију као"
-
-#: inc/settings.php:75
-msgid "What to show as Company identifier by default"
-msgstr "Како подразумевано приказивати компанију"
-
-#: inc/settings.php:77
-msgid "Company Name"
-msgstr "Назив компаније"
+#: inc/settings.php:70 stock-quote.php:180
+msgid "AlphaVantage.co API Key"
+msgstr "AlphaVantage.co АПИ кључ"
 
 #: inc/settings.php:78
+#, php-format
+msgid ""
+"To get stock data we use AlphaVantage.co API. If you do not have it already, "
+"<a href=\"%1$s\" target=\"_blank\">%2$s</a> and enter it here."
+msgstr ""
+"За добављање берзанских података користимо AlphaVantage.co АПИ. Уколико га "
+"већ немате, <a href=\"%1$s\" target=\"_blank\">%2$s</a> и унесите га овде."
+
+#: inc/settings.php:87
+msgid "Claim your free API Key"
+msgstr "Затражите ваш бесплатан АПИ кључ"
+
+#: inc/settings.php:96
+msgid "AlphaVantage.co API Key Tier"
+msgstr "AlphaVantage.co врста претплате"
+
+#: inc/settings.php:104
+#, php-format
+msgid ""
+"Which Alpha Vantage API Key membership do you have (<a href=\"%1$s\" target="
+"\"_blank\">%2$s</a> or <a href=\"%3$s\" target=\"_blank\">%4$s</a>)?"
+msgstr ""
+"За који Alpha Vantage АПИ кључ сте претплаћени (<a href=\"%1$s\" target="
+"\"_blank\">%2$s</a> или <a href=\"%3$s\" target=\"_blank\">%4$s</a>)?"
+
+#: inc/settings.php:113
+msgid "Free"
+msgstr "Бесплатно"
+
+#: inc/settings.php:115
+msgid "Premium"
+msgstr "Премиум"
+
+#: inc/settings.php:118
+msgid "Free (5 requests/min)"
+msgstr "Бесплатно (5 захтева по минуту)"
+
+#: inc/settings.php:119
+msgid "Premium (15 requests/min)"
+msgstr "Премиум (15 захтева по минуту)"
+
+#: inc/settings.php:120
+msgid "Premium (60 requests/min)"
+msgstr "Премиум (60 захтева по минуту)"
+
+#: inc/settings.php:121
+msgid "Premium (120 requests/min)"
+msgstr "Премиум (120 захтева по минуту)"
+
+#: inc/settings.php:122
+msgid "Premium (360 requests/min)"
+msgstr "Премиум (160 захтева по минуту)"
+
+#: inc/settings.php:123
+msgid "Premium (600 requests/min)"
+msgstr "Премиум (600 захтева по минуту)"
+
+#: inc/settings.php:131 inc/settings.php:397 stock-quote.php:185
+msgid "All Stock Symbols"
+msgstr "Сви симболи"
+
+#: inc/settings.php:137
+msgid ""
+"You can use any of those symbols in any quote shortcode on website. Please "
+"note, you have to define which symbol you will use per shortcode. Enter "
+"stock symbols separated with comma."
+msgstr ""
+"Можете употребити било који од ових симбола у било ком Stock Quote шорткоду "
+"на веб месту. Обратите пажњу да морате одредити у шорткоду који симбол ће "
+"бити приказан. Овде унесите симболе раздвојене зарезом."
+
+#: inc/settings.php:144
+msgid "Loading Message"
+msgstr "Учитавање поруке"
+
+#: inc/settings.php:150
+msgid ""
+"Customize message displayed to visitor until plugin load stock data through "
+"AJAX."
+msgstr ""
+"Прилагодите поруку која се приказује посетиоцима све док додатак не учита "
+"податке помоћу АЈАКСА."
+
+#: inc/settings.php:158
+msgid "Error Message"
+msgstr "Порука о грешци"
+
+#: inc/settings.php:165
+msgid ""
+"When we do not have pre-fetched stock data from AlphaVantage.co for symbol "
+"requested in stock quote block, display this message instead."
+msgstr ""
+"Када немамо у бази претходно добављене берзанске податке са AlphaVantage.co "
+"за тражени симбол, приказаћемо ову поруку."
+
+#: inc/settings.php:175
+msgid "Force data fetch"
+msgstr "Форсирано прибављање података"
+
+#: inc/settings.php:185
+msgid "Defaults"
+msgstr "Подразумевано"
+
+#: inc/settings.php:190
+msgid ""
+"Predefine default settings for Stock Quote. Here you can set stock symbol "
+"and how you wish to present companies in page."
+msgstr ""
+"Подесите подразумевана подешавања за Stock Quote. Овде можете поставити "
+"подразумевани берзански симбол и како желите буде формиран испис симбола."
+
+#: inc/settings.php:197 inc/settings.php:219 templates/settings.php:68
 msgid "Stock Symbol"
 msgstr "Симбол"
 
-#: inc/settings.php:85
+#: inc/settings.php:203
+msgid "Enter default stock symbol"
+msgstr "Унесите подразумевани симбол"
+
+#: inc/settings.php:210
+msgid "Show Company as"
+msgstr "Прикажи компанију као"
+
+#: inc/settings.php:216
+msgid "What to show as Company identifier by default"
+msgstr "Како подразумевано приказивати компанију"
+
+#: inc/settings.php:218 templates/settings.php:66
+msgid "Company Name"
+msgstr "Назив компаније"
+
+#: inc/settings.php:226
 msgid "Number format"
 msgstr "Формат броја"
 
-#: inc/settings.php:91
+#: inc/settings.php:232
 msgid "Select default number format"
 msgstr "Одаберите подразумевани формат броја"
 
-#: inc/settings.php:103
+#: inc/settings.php:244
 msgid "Decimal places"
 msgstr "Број децималних места"
 
-#: inc/settings.php:109
+#: inc/settings.php:250
 msgid "Select amount of decimal places for numbers"
 msgstr "Одаберите колико цифара ће бити приказано иза децималног зареза"
 
-#: inc/settings.php:111
+#: inc/settings.php:252
 msgid "One"
-msgstr "једна"
+msgstr "Једна"
 
-#: inc/settings.php:112
+#: inc/settings.php:253
 msgid "Two"
-msgstr "две"
+msgstr "Две"
 
-#: inc/settings.php:113
+#: inc/settings.php:254
 msgid "Three"
-msgstr "три"
+msgstr "Три"
 
-#: inc/settings.php:114
+#: inc/settings.php:255
 msgid "Four"
-msgstr "четири"
+msgstr "Четири"
 
-#: inc/settings.php:122
+#: inc/settings.php:264
 msgid "Unchanged Quote"
 msgstr "Непромењена вредност"
 
-#: inc/settings.php:128
+#: inc/settings.php:270
 msgid "Set colour for unchanged quote"
 msgstr "Поставите боју непромењене вредности"
 
-#: inc/settings.php:134
-msgid "Netagive Change"
+#: inc/settings.php:277
+msgid "Negative Change"
 msgstr "Негативна промена"
 
-#: inc/settings.php:140
+#: inc/settings.php:283
 msgid "Set colour for negative change"
 msgstr "Поставите боју негативне промене"
 
-#: inc/settings.php:146
+#: inc/settings.php:290
 msgid "Positive Change"
 msgstr "Позитивна промена"
 
-#: inc/settings.php:152
+#: inc/settings.php:296
 msgid "Set colour for positive change"
 msgstr "Поставите боју позитивне промене"
 
-#: inc/settings.php:160
-msgid "Advanced Settings"
-msgstr "Напредна подешавања"
+#: inc/settings.php:305
+msgid "Advanced"
+msgstr "Напредно"
 
-#: inc/settings.php:168
+#: inc/settings.php:310
+msgid "Set advanced options important for caching quote feeds."
+msgstr "Поставите напредна подешавања битна за добављање и чување података."
+
+#: inc/settings.php:318
 msgid "Custom Names"
 msgstr "Прилагођени називи"
 
-#: inc/settings.php:177
+#: inc/settings.php:327
 msgid ""
 "Define custom names for symbols. Single symbol per row in format EXCHANGE:"
 "SYMBOL;CUSTOM_NAME"
@@ -121,99 +250,204 @@ msgstr ""
 "Поставите прилагођене називе симбола. Један симбол по реду, у формату БЕРЗА:"
 "СИМБОЛ;ПРИЛАГОЂЕНИ_НАЗИВ"
 
-#: inc/settings.php:183
+#: inc/settings.php:333
 msgid "Cache Timeout"
 msgstr "Трајање кеша"
 
-#: inc/settings.php:189
+#: inc/settings.php:339
 msgid "Define cache timeout for single quote set, in seconds"
 msgstr "Одредите трајање привремене меморије за једну акцију, у секундама"
 
-#: inc/settings.php:200 templates/settings.php:27
+#: inc/settings.php:350 inc/settings.php:396
 msgid "Fetch Timeout"
 msgstr "Трајање добављања"
 
-#: inc/settings.php:206
+#: inc/settings.php:356
 msgid ""
 "Define timeout to fetch quote feed before give up and display error message, "
-"in seconds (default is 2)"
+"in seconds (default is 4)"
 msgstr ""
-"Одредите временски интервал у коме ће бити покушано добављање промене пре "
-"него што се одустане и прикаже порука о грешци, у секундама (подразумевана "
-"вредност је 2)"
+"Одредите време трајања прибављања података пре него што одустанемо од акције "
+"и прикажемо поруку о грешци, у секундама (подразумеване су 4 секунде)"
 
-#: inc/settings.php:217
-msgid "Error Message"
-msgstr "Порука о грешци"
-
-#: inc/settings.php:223
-msgid ""
-"When Stock Quote fail to grab quote set from Google Finance, display this "
-"mesage instead. Use macro <em>%symbol%</em> to insert requested symbol."
-msgstr ""
-"Када Stock Quote не успе да добави промене са Google Finance, ова порука ће "
-"вити приказана. Користите макро <em>%symbol%</em> да уметнете захтевани "
-"симбол."
-
-#: inc/settings.php:232
+#: inc/settings.php:368
 msgid "Custom Style"
 msgstr "Прилагођени стил"
 
-#: inc/settings.php:241
+#: inc/settings.php:377
 msgid "Define custom CSS style for quote item (font family, size, weight)"
 msgstr ""
 "Поставите прилагођени CSS стил за једну акцију (фамилија, величина, дебљина "
 "фонта и слично)"
 
-#: inc/settings.php:249
+#: inc/settings.php:393
 msgid ""
-"Predefine default settings for Stock Quote. Here you can set stock symbols "
-"and how you wish to present companies in page."
+"After you update settings, you can force stock data fetch by click on button "
+"below."
 msgstr ""
-"Поставите подразумевана подешавања за Stock Quote. Овде можете да псотавите "
-"подразумевани симбол и како ће компанија бити приказана на страници."
+"Након што сачувате измене, можете да форсирате добављање података кликом на "
+"дугме испод."
 
-#: inc/settings.php:253
-msgid "Set advanced options important for caching quote feeds."
-msgstr "Поставите напредна подешавања битна за добављање и чување података."
+#: inc/settings.php:394
+#, php-format
+msgid ""
+"Status %s is normal. It's triggeerd to prevend exceeded AlphaVantage.co API "
+"Tier timeout."
+msgstr ""
+"Статус %s је очекиван. Он се извршава како би се спречило прекорачење "
+"дозвољеног броја упита за одабрану AlphaVantage.co врсту претплате."
 
-#: inc/settings.php:353 templates/settings.php:2
+#: inc/settings.php:395
+#, php-format
+msgid ""
+"Status %1$s is shown in case when AlphaVantage.co provide empty response for "
+"symbol. You should check proper format for that symbol (for example currency "
+"<strong>since Q2 2020</strong> should not end with %2$s so use %3$s instead "
+"of old format %4$s)."
+msgstr ""
+"Статус %1$s се добија у случају када AlphaVantage.co врати празан одговор за "
+"захтевани симбол. Требало би да проверите да ли је симбол у исправном "
+"формату (на пример, ФОРЕКС симбол <strong>од другог квартала 2020</strong> "
+"не треба да се завршава са %2$s, што значи да треба да користите %3$s уместо "
+"старог формата %4$s)."
+
+#: inc/settings.php:396
+#, php-format
+msgid ""
+"If you get too much %1$s statuses during fetch, try to increase <strong>"
+"%2$s</strong> option, save settings and fetch data again."
+msgstr ""
+"Уколико добијете превише статуса %1$s у току добављања, покушајте да "
+"повећате опцију <strong>%2$s</strong>, сачувајте измене и покрените поново "
+"процес добављања берзанских података."
+
+#: inc/settings.php:397
+#, php-format
+msgid ""
+"If you get any %1$s status for same symbol multiple times, then AlphaVantage."
+"co does not have that symbol in %2$s and you should remove that faulty "
+"symbol from <strong>%3$s</strong>."
+msgstr ""
+"Уколико добијете статус %1$s за неки симбол више пута, постоји могућност да "
+"AlphaVantage.co нема податке за тај симбол у бази %2$s те би стога требало "
+"да уклоните проблематични симбол из <strong>%3$s</strong>."
+
+#: inc/settings.php:398
+msgid "Fetch Stock Data Now!"
+msgstr "Добави берзанске податке!"
+
+#: inc/settings.php:398
+msgid "Stop Fetch"
+msgstr "Заустави добављање"
+
+#: inc/settings.php:689
 msgid "Stock Quote Settings"
 msgstr "Подешавања Stock Quote"
 
 #. Plugin Name of the plugin/theme
-#: inc/settings.php:354
+#: inc/settings.php:690 templates/settings.php:44
 msgid "Stock Quote"
 msgstr "Stock Quote"
 
-#: inc/settings.php:366
+#: inc/settings.php:702
 msgid "You do not have sufficient permissions to access this page."
-msgstr "Немате дозволу да приступите овој страни!"
+msgstr "Немате дозволу да приступите овој страни."
 
-#: stock-quote.php:181
-msgid "Settings"
-msgstr "Подешавања"
+#: stock-quote.php:167 stock-quote.php:213
+#, php-format
+msgid "We are sorry, %1$s v%2$s does not support Multisite WordPress."
+msgstr "Жао нам је, %1$s у издању %2$s не подржава Мултисајт Вордпрес."
 
-#: stock-quote.php:200
+#: stock-quote.php:194
+#, php-format
+msgid ""
+"Plugin %1$s v%2$s require that you have defined options listed below to work "
+"properly. Please visit plugin %3$s page and read description for those "
+"options. %4$s"
+msgstr ""
+"Додатак %1$s у издању %2$s да би исправно радио захтева да имате дефинисане "
+"опције излистане испод. Молимо вас да посетите страницу %3$s и прочитате "
+"појашњења за те опције. %4$s"
+
+#: stock-quote.php:309
 msgid "Support"
 msgstr "Подршка"
 
-#: stock-quote.php:204
+#: stock-quote.php:313 templates/settings.php:31
 msgid "Donate"
-msgstr "Донација"
+msgstr "Донирај"
 
-#: templates/settings.php:15
+#: templates/settings.php:19
+#, php-format
+msgid "%s Settings"
+msgstr "%s подешавања"
+
+#: templates/settings.php:20
+#, php-format
+msgid "Plugin version: %s"
+msgstr "Издање додатка: %s"
+
+#: templates/settings.php:33
+msgid "FAQ"
+msgstr "ЧПП"
+
+#: templates/settings.php:35
+msgid "Community Support"
+msgstr "Подршка заједнице"
+
+#: templates/settings.php:37
+msgid "Review this plugin"
+msgstr "Оцените овај додатак"
+
+#: templates/settings.php:39
+msgid "Disclaimer"
+msgstr "Одрицање од одговорности"
+
+#: templates/settings.php:43
+#, php-format
+msgid ""
+"Since %1$s version %2$s source for all stock data used in plugin is provided "
+"by %3$s, displayed for informational and educational purposes only and "
+"should not be considered as investment advise. <br />Author of the plugin "
+"does not accept liability or responsibility for your use of plugin, "
+"including but not limited to trading and investment results."
+msgstr ""
+"%1$s од издања %2$s као извор података са берзе користи %3$s. Берзански "
+"подаци су само информативног и едукативног карактера и не треба их сматрати "
+"препорукама за инвестирање.<br />Аутор овог додатка не може преузети "
+"одговорност што ви користите додатак, укључујући али не ограничавајући се на "
+"резултате трговине и инвестирања."
+
+#: templates/settings.php:55
 msgid "Help"
 msgstr "Помоћ"
 
-#: templates/settings.php:16
+#: templates/settings.php:56
 #, php-format
-msgid "To insert Stock Quote to content, use shortcode <code>%s</code> where:"
-msgstr ""
-"Да би уметнули Stock Quote у садржај, користите шорткод <code>%s</code> где "
-"су:"
+msgid "To insert Stock Quote to content, use shortcode %s where:"
+msgstr "Да би уметнули Stock Quote у садржај, користите шорткод %s где је:"
 
-#: templates/settings.php:18
+#: templates/settings.php:57
+msgid "IMPORTANT"
+msgstr "ВАЖНО"
+
+#: templates/settings.php:57
+msgid ""
+"All shortcode parameters and values should be lowercase, except symbols "
+"which must be uppercase!"
+msgstr ""
+"Сви параметри и вредности шорткода треба да буду написани малим словима, "
+"осим симбола који морају бити написани великим словима!"
+
+#: templates/settings.php:59
+msgid "Parameter"
+msgstr "Атрибут"
+
+#: templates/settings.php:59
+msgid "Usage"
+msgstr "Употреба"
+
+#: templates/settings.php:60
 msgid ""
 "represent single stock symbol (default from this settings page used if no "
 "custom set by shortcode)"
@@ -221,43 +455,72 @@ msgstr ""
 "представља један симбол (ако не поставите симбол у шорткоду, користиће се "
 "подразумевани симбол из подешавања)"
 
-#: templates/settings.php:19
+#: templates/settings.php:64
 #, php-format
 msgid ""
-"can be <code>%s</code> to represent company with Company Name (default), or "
-"<code>%s</code> to represent company with Stock Symbol"
+"can be %1$s to represent company with %2$s, or %3$s to represent company "
+"with %4$s"
 msgstr ""
-"може да буде <code>%s</code> и представи компанију њеним именом "
-"(подразумевано), или <code>%s</code> да компанију представи берзанским "
-"симболом"
+"може да буде %1$s да прикаже компанију као %2$s, или %3$s да прикаже "
+"компанију као %4$s"
 
-#: templates/settings.php:20
+#: templates/settings.php:66
+msgid "(default)"
+msgstr "(подразумевано)"
+
+#: templates/settings.php:72
 msgid ""
-"to disable link of quotes to Google Finance page set to <code>1</code> or "
-"<code>true</code>"
+"override default number of decimal places for values (default from this "
+"settings page used if no custom set by shortcode). Valud values are: 1, 2, 3 "
+"and 4"
 msgstr ""
-"да онемогућите везу акције ка Google Finance страни користите <code>1</code> "
-"или <code>true</code>"
+"игнорише подразумевани број децималних места за вредности (подразумевани "
+"број децимала са ове стране подешавања се користи уколико није другачије "
+"дефинисано у шорткоду). Важеће вредности су: 1, 2, 3 и 4"
 
-#: templates/settings.php:21
+#: templates/settings.php:76
+#, php-format
+msgid ""
+"override default number format for values (default from this settings page "
+"used if no custom set by shortcode). Valid options are: %1$s and %2$s"
+msgstr ""
+"игнорише подразумевани формат броја за вредности (подразумевани формат са "
+"ове стране подешавања се користи уколико није другачије дефинисано у "
+"шорткоду). Важеће опције су: %1$s и %2$s"
+
+#: templates/settings.php:77 templates/settings.php:78
+msgid "for"
+msgstr "за"
+
+#: templates/settings.php:86
+#, php-format
+msgid ""
+"override default template string (default is: %1$s). You can use following "
+"template keywords: %2$s and %3$s"
+msgstr ""
+"игнориши подразумевани шаблон (подразумевано је: %1$s). Можете користити "
+"следеће кључне речи за шаблон: %2$s и %3$s"
+
+#: templates/settings.php:93
+msgid ""
+"to print quote content without being wrapped to SPAN with classes. Disabled "
+"by default. Use <code>1</code> or <code>true</code> to enable"
+msgstr ""
+"за приказ садржаја без смештања у SPAN са класама. Подразумевано је "
+"онемогућено. Користите <code>1</code> или <code>true</code> да омогућите ову "
+"опцију"
+
+#: templates/settings.php:94
 msgid "custom class name for quote item"
 msgstr "прилагођени назив класе за једну акцију"
 
-#: templates/settings.php:26
-#, php-format
-msgid ""
-"If you experience error message after update (WordPress or plugin), try to "
-"increase %s parameter in settings (from default 2 to 3 seconds), and then "
-"append to page URL parameter %s to re-fetch quote feed."
-msgstr ""
-"Ако се догоди грешка након надоградње (Вордпреса или додатка), покушајте да "
-"повећате опцију %s у подешавањима (са подразумеване 2 на 3 или више "
-"секунди), и након тога додајте у УРЛ странице параметар %s како би форсирали "
-"добављање нових података."
+#: templates/settings.php:100
+msgid "Supported Stock Exchanges"
+msgstr "Берзе које су подржане"
 
-#: templates/settings.php:44
-msgid "Disclaimer"
-msgstr "Одризање од одговорности"
+#: templates/settings.php:114
+msgid "Unsupported Stock Exchanges"
+msgstr "Берзе које нису подржане"
 
 #. Plugin URI of the plugin/theme
 msgid "https://urosevic.net/wordpress/plugins/stock-quote/"
@@ -265,11 +528,11 @@ msgstr "https://urosevic.net/wordpress/plugins/stock-quote/"
 
 #. Description of the plugin/theme
 msgid ""
-"Quick and easy insert static inline stock information for specific exchange "
-"symbol by customizable shortcode."
+"Insert static inline stock ticker for known exchange symbols by customizable "
+"shortcode."
 msgstr ""
-"Брзо и једноставно уметање статичке информације о одређеној берзанској "
-"акцији помоћу прилагодљивог шорткода."
+"Убацује статични берзански тикер за познате берзанске симболе помоћу "
+"подешавајућег шорткода."
 
 #. Author of the plugin/theme
 msgid "Aleksandar Urosevic"
@@ -278,6 +541,90 @@ msgstr "Александар Урошевић"
 #. Author URI of the plugin/theme
 msgid "https://urosevic.net"
 msgstr "https://urosevic.net"
+
+#, php-format
+#~ msgid ""
+#~ "can be <code>%s</code> to represent company with Company Name (default), "
+#~ "or <code>%s</code> to represent company with Stock Symbol"
+#~ msgstr ""
+#~ "може да буде <code>%s</code> и представи компанију њеним именом "
+#~ "(подразумевано), или <code>%s</code> да компанију представи берзанским "
+#~ "симболом"
+
+#~ msgid ""
+#~ "When we do not have pre-fetched stock data for symbols requested in block "
+#~ "from AlphaVantage.co, display this message instead."
+#~ msgstr ""
+#~ "Када у бази не постоје претходно добављени подаци за тражене симболе, ова "
+#~ "порука ће бити приказана."
+
+#~ msgid ""
+#~ "Predefine default settings for Stock Quote. Here you can set stock "
+#~ "symbols and how you wish to present companies in page."
+#~ msgstr ""
+#~ "Поставите подразумевана подешавања за Stock Quote. Овде можете да "
+#~ "псотавите подразумевани симбол и како ће компанија бити приказана на "
+#~ "страници."
+
+#~ msgid "Default Settings"
+#~ msgstr "Основна подешавања"
+
+#~ msgid "Stock Symbols"
+#~ msgstr "Симболи"
+
+#~ msgid "Netagive Change"
+#~ msgstr "Негативна промена"
+
+#~ msgid "Advanced Settings"
+#~ msgstr "Напредна подешавања"
+
+#~ msgid ""
+#~ "Define timeout to fetch quote feed before give up and display error "
+#~ "message, in seconds (default is 2)"
+#~ msgstr ""
+#~ "Одредите временски интервал у коме ће бити покушано добављање промене пре "
+#~ "него што се одустане и прикаже порука о грешци, у секундама "
+#~ "(подразумевана вредност је 2)"
+
+#~ msgid ""
+#~ "When Stock Quote fail to grab quote set from Google Finance, display this "
+#~ "mesage instead. Use macro <em>%symbol%</em> to insert requested symbol."
+#~ msgstr ""
+#~ "Када Stock Quote не успе да добави промене са Google Finance, ова порука "
+#~ "ће вити приказана. Користите макро <em>%symbol%</em> да уметнете "
+#~ "захтевани симбол."
+
+#, php-format
+#~ msgid ""
+#~ "To insert Stock Quote to content, use shortcode <code>%s</code> where:"
+#~ msgstr ""
+#~ "Да би уметнули Stock Quote у садржај, користите шорткод <code>%s</code> "
+#~ "где су:"
+
+#~ msgid ""
+#~ "to disable link of quotes to Google Finance page set to <code>1</code> or "
+#~ "<code>true</code>"
+#~ msgstr ""
+#~ "да онемогућите везу акције ка Google Finance страни користите <code>1</"
+#~ "code> или <code>true</code>"
+
+#, php-format
+#~ msgid ""
+#~ "If you experience error message after update (WordPress or plugin), try "
+#~ "to increase %s parameter in settings (from default 2 to 3 seconds), and "
+#~ "then append to page URL parameter %s to re-fetch quote feed."
+#~ msgstr ""
+#~ "Ако се догоди грешка након надоградње (Вордпреса или додатка), покушајте "
+#~ "да повећате опцију %s у подешавањима (са подразумеване 2 на 3 или више "
+#~ "секунди), и након тога додајте у УРЛ странице параметар %s како би "
+#~ "форсирали добављање нових података."
+
+#~ msgid ""
+#~ "Quick and easy insert static inline stock information for specific "
+#~ "exchange symbol by customizable shortcode."
+#~ msgstr ""
+#~ "Брзо и једноставно уметање статичке информације о одређеној берзанској "
+#~ "акцији помоћу прилагодљивог шорткода."
 
 #~ msgid "You also can use shortcode <code>%s</code> where:"
 #~ msgstr "Можете да користите шорткод <code>%s</code> при чему:"
