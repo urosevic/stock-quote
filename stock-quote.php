@@ -3,7 +3,7 @@
 Plugin Name: Stock Quote
 Plugin URI: https://urosevic.net/wordpress/plugins/stock-quote/
 Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
-Version: 0.2.1
+Version: 0.2.1.1
 Author: Aleksandar Urosevic
 Author URI: https://urosevic.net
 License: GNU GPL3
@@ -12,7 +12,7 @@ Textdomain: stock-quote
  */
 
 /**
- * Copyright 2015-2018 Aleksandar Urosevic (urke.kg@gmail.com)
+ * Copyright 2015-2020 Aleksandar Urosevic (urke.kg@gmail.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 2;
-		const VER = '0.2.1';
+		const VER = '0.2.1.1';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			'ELI'    => 'Euronext Lisbon',
 			'EPA'    => 'Euronext Paris',
 			'LON'    => 'London Stock Exchange',
-			'MCX'    => 'Moscow Exchange',
+			// 'MCX'    => 'Moscow Exchange',
 			'NASDAQ' => 'NASDAQ Exchange',
 			'CPH'    => 'NASDAQ OMX Copenhagen',
 			'HEL'    => 'NASDAQ OMX Helsinki',
@@ -1021,6 +1021,9 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			} else {
 				// Get response from AV and parse it - look for error
 				$json = wp_remote_retrieve_body( $response );
+				if ( '{}' == $json ) {
+					return 'Stock Quote connected to AlphaVantage.co and got empty response {}. If you experience this issue multiple times, it is possible that AlphaVantage.co abandoned this symbol or stock exchange. Consider removing it from <strong>All Stock Symbols</strong> field.';
+				}
 				$response_arr = json_decode( $json, true );
 				// If we got some error from AV, log to self::log and return none
 				if ( ! empty( $response_arr['Error Message'] ) ) {

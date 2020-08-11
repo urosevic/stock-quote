@@ -3,8 +3,8 @@ Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: widget, stock, securities, quote, financial, finance, exchange, bank, market, trading, investment, stock symbols, stock quotes, forex, nasdaq, nyse, wall street
 Requires at least: 4.4.0
-Tested up to: 4.9.8
-Stable tag: 0.2.1
+Tested up to: 5.4.1
+Stable tag: 0.2.1.1
 Requires PHP: 5.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -19,7 +19,7 @@ Please note, stock data has been provided by [Alpha Vantage](https://www.alphava
 
 Stock Quote is simplified, static inline variation of [Stock Ticker](https://wordpress.org/plugins/stock-ticker/) plugin.
 
-**Multisite WordPress is not supported jet**
+**Multisite WordPress is not supported yet**
 
 == Disclaimer ==
 
@@ -91,7 +91,6 @@ Alpha Vantage provide stock data for following stock exchange markets:
 * **ELI** - Euronext Lisbon
 * **EPA** - Euronext Paris
 * **LON** - London Stock Exchange
-* **MCX** - Moscow Exchange
 * **NASDAQ** - NASDAQ Exchange
 * **CPH** - NASDAQ OMX Copenhagen
 * **HEL** - NASDAQ OMX Helsinki
@@ -104,6 +103,9 @@ Alpha Vantage provide stock data for following stock exchange markets:
 * **SHE** - Shenzhen Stock Exchange
 * **TPE** - Taiwan Stock Exchange
 * **TYO** - Tokyo Stock Exchange
+
+Not supported:
+* **MCX** - Moscow Exchange
 
 == Installation ==
 
@@ -184,6 +186,12 @@ Bugfix release
 This is initial version of plugin.
 
 == Changelog ==
+
+= DEV =
+
+= 0.2.1.1 (20200520) =
+* Remove MCX from supported exchanges because AlphaVantage does not provide data for Moscow Stock Exchange
+* Add support for AlphaVantage.co empty response {} reported for Australian Exchange by @blockathon
 
 = 0.2.1 (20180923) =
 * Improve: statuses and messages in fetch log
