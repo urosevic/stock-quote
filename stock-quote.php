@@ -4,7 +4,7 @@
  * Plugin Name: Stock Quote
  * Plugin URI:  https://urosevic.net/wordpress/plugins/stock-quote/
  * Description: Insert static inline stock ticker for known exchange symbols by customizable shortcode.
- * Version:     0.2.2
+ * Version:     0.2.3
  * Author:      Aleksandar Urosevic
  * Author URI:  https://urosevic.net
  * License:     GNU GPLv3
@@ -13,7 +13,7 @@
  */
 
 /**
- * Copyright 2015-2020 Aleksandar Urosevic (urke.kg@gmail.com)
+ * Copyright 2015-2021 Aleksandar Urosevic (urke.kg@gmail.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 	class Wpau_Stock_Quote {
 
 		const DB_VER = 2;
-		const VER = '0.2.2';
+		const VER = '0.2.3';
 
 		public $plugin_name   = 'Stock Quote';
 		public $plugin_slug   = 'stock-quote';
@@ -567,6 +567,7 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$q_tz        = $stock_data['tz'];
 			$q_ltrade    = $stock_data['last_refreshed'];
 			// Preserve RAW values.
+			$raw_ltrade  = $q_ltrade;
 			$raw_change  = $q_change;
 			$raw_price   = $q_price;
 			$raw_changep = $q_changep;
@@ -648,6 +649,47 @@ if ( ! class_exists( 'Wpau_Stock_Quote' ) ) {
 			$quote_text = str_replace( '%raw_change%', $raw_change, $quote_text );
 			$quote_text = str_replace( '%raw_changep%', $raw_changep, $quote_text );
 			$quote_text = str_replace( '%raw_volume%', $raw_volume, $quote_text );
+
+			// Now simply replace not customized %ltrade% with default format.
+			$quote_text = str_replace( '%ltrade%', $q_ltrade, $quote_text );
+
+			// Check if template has custom date format for %ltrade%
+			// Usage: %ltrade% custom date format %ltrade|F j, Y%
+			if ( false !== strpos( $quote_text, '%ltrade|' ) ) {
+				// Match all %ltrade% occurances with custom date format
+				preg_match_all( '/(\%ltrade\|[^%]+\%)+/', $quote_text, $ltrade_formats );
+
+				// Just for testing...
+				$test = $ltrade_formats[0];
+
+				// If matches array exists, proceed with custom formatting
+				if ( ! empty( $ltrade_formats[0] ) ) {
+					// Convert date from quote to timestamp - use $q_ltrade and $q_tz for timezone conversion.
+					$ltrade_datetime = strtotime( $raw_ltrade );
+					$ltrade_date = date_create_from_format( 'Y-m-d H:i:s', $raw_ltrade, new DateTimeZone( $q_tz ) );
+
+					// Now process each custom date format %ltrade% occurance.
+					foreach ( $ltrade_formats[0] as $ltrade_format ) {
+
+						// Extract custom date format.
+						$ltrade_date_format = str_replace( '%ltrade|', '', $ltrade_format );
+						$ltrade_date_format = str_replace( '%', '', $ltrade_date_format );
+
+						// Format timestamp to custom date format.
+						$ltrade_date_formatted = date_format(
+							$ltrade_date,
+							$ltrade_date_format
+						);
+
+						// Now replace custom date format %ltrade% in $quote_text with formatted date.
+						$quote_text = str_replace(
+							$ltrade_format,
+							$ltrade_date_formatted,
+							$quote_text
+						);
+					}
+				}
+			}
 
 			if ( $raw ) {
 				$out = $quote_text;

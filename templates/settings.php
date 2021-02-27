@@ -85,8 +85,14 @@ global $wpau_stockquote;
 						printf(
 							__( 'override default template string (default is: %1$s). You can use following template keywords: %2$s and %3$s', 'stock-quote' ),
 							'<code>%company% %price% %change% %changep%</code>',
-							'<code>%symbol%</code>, <code>%exch_symbol%</code>, <code>%company%</code>, <code>%company_name%</code>, <code>%price%</code>, <code>%change%</code>, <code>%changep%</code>, <code>%volume%</code>, <code>%raw_price%</code>, <code>%raw_change%</code>, <code>%raw_changep%</code>',
+							'<code>%symbol%</code>, <code>%exch_symbol%</code>, <code>%company%</code>, <code>%company_name%</code>, <code>%price%</code>, <code>%change%</code>, <code>%changep%</code>, <code>%volume%</code>, <code>%ltrade%</code>, <code>%raw_price%</code>, <code>%raw_change%</code>, <code>%raw_changep%</code>',
 							'<code>%raw_volume%</code>'
+						);
+						printf(
+							'<br>' . __( 'Keyword %1$s can be extended with date format modifier (standard %2$s date format) appended after pipe character (eg. %3$s)', 'stock-quote' ),
+							'<code>%ltrade%</code>',
+							'<a href="https://www.php.net/manual/en/datetime.format.php" target="_blank">PHP</a>',
+							'<code>%ltrade|l, jS \of F Y%</code>'
 						);
 						?>
 				</dd>

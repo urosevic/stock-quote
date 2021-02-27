@@ -3,8 +3,8 @@ Contributors: urkekg
 Donate link: https://urosevic.net/wordpress/donate/?donate_for=stock-quote
 Tags: stock, stock quote, trading, finance, exchange
 Requires at least: 4.6
-Tested up to: 5.5
-Stable tag: 0.2.2
+Tested up to: 5.6
+Stable tag: 0.2.3
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -66,7 +66,7 @@ You can tune single shortcode with parameters:
 * `show` - can be `name` to represent company with Company Name (default), or `symbol` to represent company with Stock Symbol. You must add preferred symbol to `Custom Names` textarea on Settings page because Google Finance does not provide nice company names in feeds
 * `decimals` - override default number of decimal places for values (default from settings page used if no custom set by shortcode). Valud values are: `1`, `2`, `3` and `4`
 * `number_format` - override default number format for values (default from this settings page used if no custom set by shortcode). Valid options are: `cd` for *0.000,00*; `dc` for *0,000.00*; `sd` for *0 000.00* and `sc` for *0 000,00*
-* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%company_name%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%`, `%volume%`, `%raw_price%`, `%raw_change%`, `%raw_changep%`, `%raw_volume%`
+* `template` - override default template string (default is: `%company% %price% %change% %changep%`). You can use following template keywords: `%company%`, `%company_name%`, `%exch_symbol%`, `%symbol%`, `%price%`, `%change%`, `%changep%`, `%volume%`, `%raw_price%`, `%raw_change%`, `%raw_changep%`, `%raw_volume%` and `%ltrade%` which stand for the last trade day (like *2020-09-25*), which can be followed by [the PHP date format](https://www.php.net/manual/en/datetime.format.php) to customize date output, separate by pipe character, eg. *|l, jS \of F Y*
 * `raw` - enable printing quote content without wrapping to SPAN with classes. Default is disabled. Can be `1` or `true` for enabled, OR `0` or `false` for disabled.
 * `class` - (optional) custom class name for quote item, if you wish some special styling
 
@@ -189,7 +189,9 @@ This is initial version of plugin.
 
 == Changelog ==
 
-= DEV =
+= 0.2.3 (20210227) =
+* Tested: WordPress 5.6.2 and PHP 7.4.15
+* Add: new template keyword `%ltrade%` with optional modifier for customized date format like `%ltrade|l, jS \of F Y%`
 
 = 0.2.2 (20200811) =
 * Tested: WordPress 5.5-RC2-48768 and PHP 7.4.1
